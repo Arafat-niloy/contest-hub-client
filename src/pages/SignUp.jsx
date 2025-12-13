@@ -1,13 +1,15 @@
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../providers/AuthProvider";
+import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const SignUp = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const { createUser, updateUserProfile, googleSignIn } = useContext(AuthContext);
     const navigate = useNavigate();
+    const axiosPublic = useAxiosPublic();
 
     const onSubmit = data => {
         createUser(data.email, data.password)
@@ -16,10 +18,24 @@ const SignUp = () => {
                 console.log(loggedUser);
                 updateUserProfile(data.name, data.photoURL)
                     .then(() => {
-                        console.log('user profile info updated');
-                        reset();
-                        toast.success('User Created Successfully');
-                        navigate('/');
+                        // User Profile Updated via Firebase
+                        // Now save user to MongoDB
+                        const userInfo = {
+                            name: data.name,
+                            email: data.email,
+                            photo: data.photoURL,
+                            role: 'user' // Default role
+                        }
+                        
+                        axiosPublic.post('/users', userInfo)
+                            .then(res => {
+                                if (res.data.insertedId) {
+                                    console.log('User added to database');
+                                    reset();
+                                    toast.success('User Created Successfully');
+                                    navigate('/');
+                                }
+                            })
                     })
                     .catch(error => console.log(error))
             })
@@ -33,8 +49,19 @@ const SignUp = () => {
         googleSignIn()
             .then(result => {
                 console.log(result.user);
-                toast.success('Google Login Successful');
-                navigate('/');
+                const userInfo = {
+                    email: result.user?.email,
+                    name: result.user?.displayName,
+                    photo: result.user?.photoURL,
+                    role: 'user'
+                }
+                // Google user data save to DB
+                axiosPublic.post('/users', userInfo)
+                    .then(res => {
+                        console.log(res.data);
+                        toast.success('Google Login Successful');
+                        navigate('/');
+                    })
             })
             .catch(error => console.error(error));
     }
