@@ -13,6 +13,8 @@ import MyRegisteredContests from "../pages/Dashboard/MyRegisteredContests";
 import SubmitTask from "../pages/Dashboard/SubmitTask";
 import MyCreatedContest from "../pages/Dashboard/MyCreatedContest/MyCreatedContest";
 import ContestSubmitted from "../pages/Dashboard/MyCreatedContest/ContestSubmitted";
+import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
+import ManageContests from "../pages/Dashboard/ManageContests/ManageContests";
 
 export const router = createBrowserRouter([
   {
@@ -94,6 +96,14 @@ export const router = createBrowserRouter([
       {
         path: "contest/submitted/:id",
         element: <ContestSubmitted></ContestSubmitted>,
+      },
+      {
+        path: "manage-users",
+        element: <ManageUsers></ManageUsers>,
+      },
+      {
+        path: "manage-contests",
+        element: <ManageContests></ManageContests>,
       },
     ],
   },
