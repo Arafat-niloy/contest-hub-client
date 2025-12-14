@@ -12,6 +12,7 @@ import Payment from "../pages/Payment/Payment"; // Import করো
 import MyRegisteredContests from "../pages/Dashboard/MyRegisteredContests";
 import SubmitTask from "../pages/Dashboard/SubmitTask";
 import MyCreatedContest from "../pages/Dashboard/MyCreatedContest/MyCreatedContest";
+import ContestSubmitted from "../pages/Dashboard/MyCreatedContest/ContestSubmitted";
 
 export const router = createBrowserRouter([
   {
@@ -89,6 +90,10 @@ export const router = createBrowserRouter([
       {
         path: "my-created-contest",
         element: <MyCreatedContest></MyCreatedContest>,
+      },
+      {
+        path: "contest/submitted/:id",
+        element: <ContestSubmitted></ContestSubmitted>,
       },
     ],
   },
