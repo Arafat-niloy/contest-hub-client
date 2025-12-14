@@ -14,7 +14,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <RouterProvider 
+            router={router} 
+            fallbackElement={<div className="flex justify-center items-center h-screen"><span className="loading loading-spinner loading-lg"></span></div>} 
+        />
         <Toaster />
       </QueryClientProvider>
     </AuthProvider>

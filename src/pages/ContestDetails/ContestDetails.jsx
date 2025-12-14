@@ -1,14 +1,21 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, Link } from "react-router-dom"; // 👈 Link ইম্পোর্ট করা জরুরি
 
 const ContestDetails = () => {
     const contest = useLoaderData();
-    const { contestName, image, description, price, prizeMoney, taskInstruction, deadline, participationCount } = contest;
+    // 👇 এখানে _id নিশ্চিত করা হলো
+    const { _id, contestName, image, description, price, prizeMoney, taskInstruction, deadline, participationCount } = contest;
 
     return (
         <div className="my-10 px-4 lg:px-24">
             <div className="card lg:card-side bg-base-100 shadow-xl border">
                 <figure className="lg:w-1/2">
-                    <img src={image} alt={contestName} className="w-full h-full object-cover" />
+                    {/* 👇 ইমেজে এরর হ্যান্ডলিং যোগ করা হলো যাতে 404 হলে অ্যাপ ক্র্যাশ না করে */}
+                    <img 
+                        src={image} 
+                        alt={contestName} 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => { e.target.src = "https://i.ibb.co/xz9s2wN/placeholder.jpg" }} // ফলব্যাক ইমেজ
+                    />
                 </figure>
                 <div className="card-body lg:w-1/2">
                     <h2 className="card-title text-3xl font-bold text-primary">{contestName}</h2>
@@ -39,8 +46,10 @@ const ContestDetails = () => {
                     </div>
 
                     <div className="card-actions justify-end mt-6">
-                        {/* আপাতত বাটনটি কাজ করবে না, পরে আমরা এখানে পেমেন্ট বসাবো */}
-                        <button className="btn btn-primary w-full text-lg shadow-lg">Register Now</button>
+                        {/* 👇 এখানে Link ব্যবহার করে পেমেন্ট পেজে পাঠানো হচ্ছে */}
+                        <Link to={`/payment/${_id}`} className="w-full">
+                            <button className="btn btn-primary w-full text-lg shadow-lg">Register Now</button>
+                        </Link>
                     </div>
                 </div>
             </div>

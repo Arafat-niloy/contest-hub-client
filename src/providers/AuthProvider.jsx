@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import app from "../firebase/firebase.config";
+import useAxiosPublic from "../hooks/useAxiosPublic"; // 👈 এই ইম্পোর্টটি খুব গুরুত্বপূর্ণ
 
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
@@ -9,6 +10,7 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const googleProvider = new GoogleAuthProvider();
+    const axiosPublic = useAxiosPublic(); // 👈 পাবলিক এক্সিওস হুক কল করা হলো
 
     const createUser = (email, password) => {
         setLoading(true);
@@ -36,16 +38,31 @@ const AuthProvider = ({ children }) => {
         });
     }
 
+    // 👇 এই useEffect অংশটি আপডেট করা হয়েছে JWT এর জন্য
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, currentUser => {
             setUser(currentUser);
-            console.log('Current user:', currentUser);
-            setLoading(false);
+            if (currentUser) {
+                // ইউজার লগইন করলে টোকেন আনতে হবে
+                const userInfo = { email: currentUser.email };
+                axiosPublic.post('/jwt', userInfo)
+                    .then(res => {
+                        if (res.data.token) {
+                            localStorage.setItem('access-token', res.data.token);
+                            setLoading(false); // টোকেন পাওয়ার পর লোডিং বন্ধ হবে
+                        }
+                    })
+            }
+            else {
+                // ইউজার লগআউট করলে টোকেন মুছে ফেলতে হবে
+                localStorage.removeItem('access-token');
+                setLoading(false);
+            }
         });
         return () => {
             return unsubscribe();
         }
-    }, [])
+    }, [axiosPublic])
 
     const authInfo = {
         user,

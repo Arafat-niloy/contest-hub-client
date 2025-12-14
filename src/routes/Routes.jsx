@@ -8,6 +8,8 @@ import PrivateRoute from "./PrivateRoute";
 import AddContest from "../pages/Dashboard/AddContest";
 import AllContests from "../pages/Dashboard/AllContests";
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
+import Payment from "../pages/Payment/Payment"; // Import করো
+import MyRegisteredContests from "../pages/Dashboard/MyRegisteredContests";
 
 export const router = createBrowserRouter([
   {
@@ -20,41 +22,64 @@ export const router = createBrowserRouter([
       },
       {
         path: "all-contests",
-        element: <AllContests></AllContests>
+        element: <AllContests></AllContests>,
       },
       {
         path: "contest/:id",
-        element: <PrivateRoute><ContestDetails></ContestDetails></PrivateRoute>,
-        loader: ({params}) => fetch(`http://localhost:5000/contests/${params.id}`)
+        element: (
+          <PrivateRoute>
+            <ContestDetails></ContestDetails>
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/contests/${params.id}`),
       },
       {
         path: "login",
-        element: <Login></Login>
+        element: <Login></Login>,
+      },
+      {
+        path: "payment/:id",
+        element: (
+          <PrivateRoute>
+            <Payment></Payment>
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/contests/${params.id}`),
       },
       {
         path: "signup",
-        element: <SignUp></SignUp>
-      }
+        element: <SignUp></SignUp>,
+      },
     ],
   },
   {
-    path: 'dashboard',
-    element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
+    path: "dashboard",
+    element: (
+      <PrivateRoute>
+        <Dashboard></Dashboard>
+      </PrivateRoute>
+    ),
     children: [
-        // User Routes
-        {
-            path: 'user-home',
-            element: <div>User Home Page</div> // Placeholder
-        },
-        {
-            path: 'my-profile',
-            element: <div>My Profile Page</div> // Placeholder
-        },
-        // Creator Routes
-        {
-            path: 'add-contest',
-            element: <AddContest></AddContest>
-        }
-    ]
-  }
+      // User Routes
+      {
+        path: "user-home",
+        element: <div>User Home Page</div>, // Placeholder
+      },
+      {
+        path: "my-profile",
+        element: <div>My Profile Page</div>, // Placeholder
+      },
+      // Creator Routes
+      {
+        path: "add-contest",
+        element: <AddContest></AddContest>,
+      },
+      {
+        path: "registered-contests",
+        element: <MyRegisteredContests></MyRegisteredContests>,
+      }
+    ],
+  },
 ]);
