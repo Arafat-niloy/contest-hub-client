@@ -10,6 +10,8 @@ import AllContests from "../pages/Dashboard/AllContests";
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
 import Payment from "../pages/Payment/Payment"; // Import করো
 import MyRegisteredContests from "../pages/Dashboard/MyRegisteredContests";
+import SubmitTask from "../pages/Dashboard/SubmitTask";
+import MyCreatedContest from "../pages/Dashboard/MyCreatedContest/MyCreatedContest";
 
 export const router = createBrowserRouter([
   {
@@ -79,7 +81,15 @@ export const router = createBrowserRouter([
       {
         path: "registered-contests",
         element: <MyRegisteredContests></MyRegisteredContests>,
-      }
+      },
+      {
+        path: "payment/submit/:id",
+        element: <SubmitTask></SubmitTask>,
+      },
+      {
+        path: "my-created-contest",
+        element: <MyCreatedContest></MyCreatedContest>,
+      },
     ],
   },
 ]);

@@ -48,14 +48,18 @@ const MyRegisteredContests = () => {
                                     }
                                 </td>
                                 <td>
-                                   {/* টাস্ক সাবমিশন বাটন - আমরা এটি পরবর্তী ধাপে ফাংশনাল করব */}
-                                   <Link to={`/dashboard/payment/submit/${payment._id}`}>
-                                        <button 
-                                            disabled={payment.taskSubmitted} 
-                                            className="btn btn-sm btn-secondary">
-                                            {payment.taskSubmitted ? 'Submitted' : 'Submit Task'}
-                                        </button>
-                                   </Link>
+                                   {/* লজিক আপডেট: যদি সাবমিট করা থাকে টেক্সট দেখাবে, না থাকলে বাটন */}
+                                   {
+                                     payment.taskSubmitted ? (
+                                        <span className="text-green-500 font-bold">Submitted</span>
+                                     ) : (
+                                        <Link to={`/dashboard/payment/submit/${payment._id}`}>
+                                            <button className="btn btn-sm btn-secondary">
+                                                Submit Task
+                                            </button>
+                                        </Link>
+                                     )
+                                   }
                                 </td>
                             </tr>)
                         }

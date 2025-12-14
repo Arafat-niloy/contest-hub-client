@@ -5,7 +5,7 @@ const Dashboard = () => {
     // TODO: get user role from database later
     // আপাতত টেস্ট করার জন্য সব false রাখুন, তাহলে User Menu দেখতে পাবেন
     const isAdmin = false; 
-    const isCreator = false; // <--- এটি false থাকলে আপনি User Menu দেখতে পাবেন
+    const isCreator = true; // <--- এটি false থাকলে আপনি User Menu দেখতে পাবেন
 
     return (
         <div className="drawer lg:drawer-open">
