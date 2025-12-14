@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
-import useAxiosPublic from "../../hooks/useAxiosPublic";
+import useAxiosSecure from "../../hooks/useAxiosSecure"; // 👈 Public এর বদলে Secure ইমপোর্ট করুন
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import toast from "react-hot-toast";
 
 const AddContest = () => {
     const { register, handleSubmit, reset } = useForm();
-    const axiosPublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure(); // 👈 এখানে axiosSecure ব্যবহার করুন
     const { user } = useContext(AuthContext);
 
     const onSubmit = async (data) => {
@@ -26,11 +26,16 @@ const AddContest = () => {
             participationCount: 0
         }
 
-        // TODO: Server secure hole axiosSecure use korbo
-        const res = await axiosPublic.post('/contests', contestData);
-        if(res.data.insertedId){
-            toast.success('Contest added successfully!');
-            reset();
+        try {
+            // 👈 এখানে axiosSecure.post ব্যবহার করা হয়েছে
+            const res = await axiosSecure.post('/contests', contestData);
+            if(res.data.insertedId){
+                toast.success('Contest added successfully!');
+                reset();
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to add contest. Make sure you are a Creator.");
         }
     };
 
@@ -51,7 +56,7 @@ const AddContest = () => {
                     />
                 </div>
 
-                <div className="flex gap-6">
+                <div className="flex flex-col md:flex-row gap-6">
                     {/* Image URL */}
                     <div className="form-control w-full mb-4">
                         <label className="label">
@@ -80,7 +85,7 @@ const AddContest = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-6">
+                <div className="flex flex-col md:flex-row gap-6">
                     {/* Price */}
                     <div className="form-control w-full mb-4">
                         <label className="label">
