@@ -5,14 +5,25 @@ import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import Dashboard from "../layout/Dashboard";
 import PrivateRoute from "./PrivateRoute";
-import AddContest from "../pages/Dashboard/AddContest";
-import AllContests from "../pages/Dashboard/AllContests";
+
+// General Pages
+import AllContests from "../pages/Dashboard/AllContests"; 
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
-import Payment from "../pages/Payment/Payment"; // Import করো
-import MyRegisteredContests from "../pages/Dashboard/MyRegisteredContests";
-import SubmitTask from "../pages/Dashboard/SubmitTask";
+import Payment from "../pages/Payment/Payment";
+
+// Dashboard Common Pages
+import Profile from "../pages/Profile/Profile"; // ⚠️ পাথ চেক করুন: আপনার Profile.jsx কোথায় আছে?
+
+// Dashboard - User Pages
+import MyParticipated from "../pages/Dashboard/MyParticipated/MyParticipated";
+import SubmitTask from "../pages/Dashboard/SubmitTask"; 
+
+// Dashboard - Creator Pages
+import AddContest from "../pages/Dashboard/AddContest";
 import MyCreatedContest from "../pages/Dashboard/MyCreatedContest/MyCreatedContest";
-import ContestSubmitted from "../pages/Dashboard/MyCreatedContest/ContestSubmitted";
+import ContestSubmitted from "../pages/Dashboard/MyCreatedContest/ContestSubmitted"; 
+
+// Dashboard - Admin Pages
 import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
 import ManageContests from "../pages/Dashboard/ManageContests/ManageContests";
 
@@ -31,27 +42,17 @@ export const router = createBrowserRouter([
       },
       {
         path: "contest/:id",
-        element: (
-          <PrivateRoute>
-            <ContestDetails></ContestDetails>
-          </PrivateRoute>
-        ),
-        loader: ({ params }) =>
-          fetch(`http://localhost:5000/contests/${params.id}`),
+        element: <PrivateRoute><ContestDetails></ContestDetails></PrivateRoute>,
+        loader: ({ params }) => fetch(`http://localhost:5000/contests/${params.id}`),
+      },
+      {
+        path: "payment/:id",
+        element: <PrivateRoute><Payment></Payment></PrivateRoute>,
+        loader: ({ params }) => fetch(`http://localhost:5000/contests/${params.id}`),
       },
       {
         path: "login",
         element: <Login></Login>,
-      },
-      {
-        path: "payment/:id",
-        element: (
-          <PrivateRoute>
-            <Payment></Payment>
-          </PrivateRoute>
-        ),
-        loader: ({ params }) =>
-          fetch(`http://localhost:5000/contests/${params.id}`),
       },
       {
         path: "signup",
@@ -61,42 +62,47 @@ export const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element: (
-      <PrivateRoute>
-        <Dashboard></Dashboard>
-      </PrivateRoute>
-    ),
+    element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
     children: [
-      // User Routes
+      // =================================================
+      // COMMON DASHBOARD ROUTES (For All Users)
+      // =================================================
       {
-        path: "user-home",
-        element: <div>User Home Page</div>, // Placeholder
+        path: 'profile',
+        element: <PrivateRoute><Profile></Profile></PrivateRoute>
+      },
+
+      // =================================================
+      // USER ROUTES
+      // =================================================
+      {
+        path: "my-participated",
+        element: <MyParticipated></MyParticipated>,
       },
       {
-        path: "my-profile",
-        element: <div>My Profile Page</div>, // Placeholder
+        path: "payment/submit/:id", // :id = Payment _id
+        element: <SubmitTask></SubmitTask>,
       },
-      // Creator Routes
+
+      // =================================================
+      // CREATOR ROUTES
+      // =================================================
       {
         path: "add-contest",
         element: <AddContest></AddContest>,
       },
       {
-        path: "registered-contests",
-        element: <MyRegisteredContests></MyRegisteredContests>,
-      },
-      {
-        path: "payment/submit/:id",
-        element: <SubmitTask></SubmitTask>,
-      },
-      {
-        path: "my-created-contest",
+        path: "my-created",
         element: <MyCreatedContest></MyCreatedContest>,
       },
       {
-        path: "contest/submitted/:id",
+        path: "contest/submitted/:id", // :id = Contest _id
         element: <ContestSubmitted></ContestSubmitted>,
       },
+
+      // =================================================
+      // ADMIN ROUTES
+      // =================================================
       {
         path: "manage-users",
         element: <ManageUsers></ManageUsers>,
