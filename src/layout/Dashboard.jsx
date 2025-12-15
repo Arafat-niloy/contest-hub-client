@@ -1,9 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { FaHome, FaUser, FaTrophy, FaList } from 'react-icons/fa'; 
-import useRole from "../hooks/useRole"; // 1. useRole হুক ইম্পোর্ট করা হলো
+import { FaHome, FaUser, FaTrophy, FaList, FaChartPie } from 'react-icons/fa'; // FaChartPie আইকন যোগ করলাম
+import useRole from "../hooks/useRole"; 
 
 const Dashboard = () => {
-    // 2. ডাটাবেস থেকে রোল নিয়ে আসা হচ্ছে
     const [role] = useRole(); 
 
     return (
@@ -20,6 +19,15 @@ const Dashboard = () => {
                 <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
                 <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
                     
+                    {/* ✅✅ SOLUTION: Dashboard Home Button Added Here */}
+                    {/* এই বাটনটি সব রোলের ইউজাররাই দেখতে পাবে এবং ক্লিক করলে মেইন ড্যাশবোর্ডে ফিরে আসবে */}
+                    <li className="mb-2">
+                        <NavLink to="/dashboard" end>
+                            <FaChartPie className="text-xl"/> Dashboard Overview
+                        </NavLink>
+                    </li>
+                    {/* ====================================================== */}
+
                     {/* ---------------- Admin Sidebar ---------------- */}
                     {role === 'admin' && <>
                         <li>
@@ -69,8 +77,8 @@ const Dashboard = () => {
 
                     <div className="divider"></div>
                     
-                    {/* ---------------- Shared Routes ---------------- */}
-                    <li><NavLink to="/"><FaHome></FaHome> Home</NavLink></li> 
+                    {/* ---------------- Shared Routes (Main Site Navigation) ---------------- */}
+                    <li><NavLink to="/"><FaHome></FaHome> Website Home</NavLink></li> 
                     <li><NavLink to="/all-contests"><FaList></FaList> All Contests</NavLink></li>
                 </ul>
             </div>

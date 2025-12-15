@@ -12,11 +12,13 @@ import ContestDetails from "../pages/ContestDetails/ContestDetails";
 import Payment from "../pages/Payment/Payment";
 
 // Dashboard Common Pages
-import Profile from "../pages/Profile/Profile"; // ⚠️ পাথ চেক করুন: আপনার Profile.jsx কোথায় আছে?
+import Profile from "../pages/Profile/Profile"; 
+import DashboardHome from "../pages/Dashboard/DashboardHome"; 
 
 // Dashboard - User Pages
 import MyParticipated from "../pages/Dashboard/MyParticipated/MyParticipated";
 import SubmitTask from "../pages/Dashboard/SubmitTask"; 
+import MyWinning from "../pages/Dashboard/MyWinning"; // ✅ ইমপোর্ট যুক্ত করা হয়েছে
 
 // Dashboard - Creator Pages
 import AddContest from "../pages/Dashboard/AddContest";
@@ -65,6 +67,14 @@ export const router = createBrowserRouter([
     element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
     children: [
       // =================================================
+      // DASHBOARD DEFAULT (STATS / HOME)
+      // =================================================
+      {
+        index: true,
+        element: <DashboardHome></DashboardHome>, 
+      },
+
+      // =================================================
       // COMMON DASHBOARD ROUTES (For All Users)
       // =================================================
       {
@@ -78,6 +88,10 @@ export const router = createBrowserRouter([
       {
         path: "my-participated",
         element: <MyParticipated></MyParticipated>,
+      },
+      {
+        path: "my-winning", 
+        element: <MyWinning></MyWinning>, // ✅ এই নতুন রাউটটি যোগ করা হয়েছে
       },
       {
         path: "payment/submit/:id", // :id = Payment _id
