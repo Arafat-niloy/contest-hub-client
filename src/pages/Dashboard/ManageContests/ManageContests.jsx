@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
-import { FaTrash, FaCheck } from "react-icons/fa";
+import { FaTrash, FaCheck, FaListAlt } from "react-icons/fa";
 
 const ManageContests = () => {
     const axiosSecure = useAxiosSecure();
 
     // সব কন্টেস্ট (Pending + Accepted) লোড করা হচ্ছে
-    const { data: contests = [], refetch } = useQuery({
+    const { data: contests = [], refetch, isLoading } = useQuery({
         queryKey: ['admin-contests'],
         queryFn: async () => {
             const res = await axiosSecure.get('/contests/admin/all');
@@ -24,7 +24,7 @@ const ManageContests = () => {
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
-                        title: "Contest Approved!",
+                        title: "Contest Approved Successfully!",
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -40,6 +40,7 @@ const ManageContests = () => {
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
@@ -54,76 +55,125 @@ const ManageContests = () => {
         });
     };
 
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-screen"><span className="loading loading-spinner loading-lg text-[#FF642F]"></span></div>;
+    }
+
     return (
-        <div className="w-full">
-            <h2 className="text-3xl font-bold text-center mb-10 text-gray-800">Manage All Contests</h2>
+        <div className="p-8 bg-gray-50 min-h-screen w-full font-sans text-[#1A1A1A]">
             
-            <div className="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-200">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+                <div>
+                    <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                        <FaListAlt className="text-[#FF642F]" /> Manage Contests
+                    </h2>
+                    <p className="text-gray-500 mt-1">Review and manage all user submitted contests.</p>
+                </div>
+                <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-gray-200 mt-4 md:mt-0">
+                    <span className="font-bold text-gray-600">Total Contests: </span>
+                    <span className="text-[#FF642F] font-bold text-xl ml-2">{contests.length}</span>
+                </div>
+            </div>
+            
+            {/* Table Container */}
+            <div className="overflow-hidden bg-white shadow-xl rounded-2xl border border-gray-100">
                 <table className="table w-full">
                     {/* Head */}
-                    <thead className="bg-orange-400 text-white text-lg">
+                    <thead className="bg-orange-50 text-[#FF642F] text-sm uppercase tracking-wider">
                         <tr>
-                            <th className="py-4 pl-6">#</th>
-                            <th>Image</th>
-                            <th>Title</th>
+                            <th className="py-5 pl-8">#</th>
+                            <th>Thumbnail</th>
+                            <th>Contest Title</th>
                             <th>Creator</th>
                             <th>Status</th>
-                            <th className="text-center">Action</th>
+                            <th className="text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-gray-100">
                         {
-                            contests.map((contest, index) => <tr key={contest._id} className="hover:bg-gray-50 border-b">
-                                <th className="pl-6">{index + 1}</th>
-                                <td>
-                                    <div className="avatar">
-                                        <div className="mask mask-squircle w-12 h-12">
-                                            <img src={contest.image} alt="Contest" />
+                            contests.map((contest, index) => (
+                                <tr key={contest._id} className="hover:bg-gray-50 transition-colors duration-200">
+                                    <th className="pl-8 text-gray-400">{index + 1}</th>
+                                    
+                                    {/* Image */}
+                                    <td>
+                                        <div className="avatar">
+                                            <div className="w-14 h-14 rounded-xl shadow-sm border border-gray-100">
+                                                <img 
+                                                    src={contest.image} 
+                                                    alt="Contest" 
+                                                    className="object-cover"
+                                                    onError={(e) => { e.target.src = "https://i.ibb.co/xz9s2wN/placeholder.jpg" }}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td className="font-semibold text-gray-700">{contest.contestName}</td>
-                                <td className="text-gray-500 text-sm">{contest.creatorEmail}</td>
-                                <td>
-                                    {contest.status === 'accepted' ? (
-                                        <span className="bg-green-100 text-green-600 py-1 px-3 rounded-full text-xs font-bold">
-                                            Accepted
-                                        </span>
-                                    ) : (
-                                        <span className="bg-yellow-100 text-yellow-600 py-1 px-3 rounded-full text-xs font-bold">
-                                            Pending
-                                        </span>
-                                    )}
-                                </td>
-                                <td className="flex justify-center gap-3 py-4">
-                                    {/* Approve Button (Green) */}
-                                    <button 
-                                        onClick={() => handleApprove(contest)}
-                                        disabled={contest.status === 'accepted'}
-                                        // নিচে সরাসরি কালার কোড ব্যবহার করা হয়েছে যাতে আইকন দেখা যায়
-                                        className={`btn btn-sm text-white border-none ${
-                                            contest.status === 'accepted' 
-                                            ? 'bg-gray-300 cursor-not-allowed' 
-                                            : 'bg-green-500 hover:bg-green-600'
-                                        }`}
-                                        title="Approve Contest"
-                                    >
-                                        <FaCheck className="text-lg" />
-                                    </button>
+                                    </td>
+                                    
+                                    {/* Title */}
+                                    <td className="font-bold text-gray-700 text-base">
+                                        {contest.contestName}
+                                    </td>
+                                    
+                                    {/* Creator */}
+                                    <td className="text-gray-500 text-sm">
+                                        {contest.creatorEmail}
+                                    </td>
+                                    
+                                    {/* Status Badge */}
+                                    <td>
+                                        {contest.status === 'accepted' ? (
+                                            <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-bold border border-green-200">
+                                                <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                                                Accepted
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 py-1 px-3 rounded-full text-xs font-bold border border-yellow-200">
+                                                <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                                                Pending
+                                            </span>
+                                        )}
+                                    </td>
+                                    
+                                    {/* Actions */}
+                                    <td className="flex justify-center gap-3 py-6">
+                                        {/* Approve Button */}
+                                        <div className="tooltip" data-tip={contest.status === 'accepted' ? "Already Approved" : "Approve"}>
+                                            <button 
+                                                onClick={() => handleApprove(contest)}
+                                                disabled={contest.status === 'accepted'}
+                                                className={`btn btn-sm btn-circle border-none shadow-md transition-all ${
+                                                    contest.status === 'accepted' 
+                                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
+                                                    : 'bg-green-500 hover:bg-green-600 text-white hover:scale-105'
+                                                }`}
+                                            >
+                                                <FaCheck />
+                                            </button>
+                                        </div>
 
-                                    {/* Delete Button (Red) */}
-                                    <button 
-                                        onClick={() => handleDelete(contest)}
-                                        className="btn btn-sm bg-red-500 hover:bg-red-600 text-white border-none"
-                                        title="Delete Contest"
-                                    >
-                                        <FaTrash className="text-lg" />
-                                    </button>
-                                </td>
-                            </tr>)
+                                        {/* Delete Button */}
+                                        <div className="tooltip" data-tip="Delete">
+                                            <button 
+                                                onClick={() => handleDelete(contest)}
+                                                className="btn btn-sm btn-circle bg-red-100 hover:bg-red-500 text-red-500 hover:text-white border-none shadow-sm hover:shadow-md transition-all hover:scale-105"
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
                         }
                     </tbody>
                 </table>
+                
+                {/* Empty State */}
+                {contests.length === 0 && (
+                    <div className="text-center py-20 text-gray-400">
+                        <p>No contests found.</p>
+                    </div>
+                )}
             </div>
         </div>
     );
