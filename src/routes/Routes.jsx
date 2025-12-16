@@ -5,6 +5,7 @@ import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import Dashboard from "../layout/Dashboard";
 import PrivateRoute from "./PrivateRoute";
+import ErrorPage from "../pages/ErrorPage"; // ✅ 1. ErrorPage Import
 
 // General Pages
 import AllContests from "../pages/Dashboard/AllContests"; 
@@ -18,7 +19,7 @@ import DashboardHome from "../pages/Dashboard/DashboardHome";
 // Dashboard - User Pages
 import MyParticipated from "../pages/Dashboard/MyParticipated/MyParticipated";
 import SubmitTask from "../pages/Dashboard/SubmitTask"; 
-import MyWinning from "../pages/Dashboard/MyWinning"; // ✅ ইমপোর্ট যুক্ত করা হয়েছে
+import MyWinning from "../pages/Dashboard/MyWinning"; 
 
 // Dashboard - Creator Pages
 import AddContest from "../pages/Dashboard/AddContest";
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
+    errorElement: <ErrorPage></ErrorPage>, // ✅ 2. Main Layout Error Handling
     children: [
       {
         path: "/",
@@ -65,6 +67,7 @@ export const router = createBrowserRouter([
   {
     path: "dashboard",
     element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
+    errorElement: <ErrorPage></ErrorPage>, // Dashboard Error Handling
     children: [
       // =================================================
       // DASHBOARD DEFAULT (STATS / HOME)
@@ -91,7 +94,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "my-winning", 
-        element: <MyWinning></MyWinning>, // ✅ এই নতুন রাউটটি যোগ করা হয়েছে
+        element: <MyWinning></MyWinning>,
       },
       {
         path: "payment/submit/:id", // :id = Payment _id
@@ -127,4 +130,10 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  
+  // ✅ 3. Catch-all Route for 404 (Sobar sheshe thakbe)
+  {
+    path: "*",
+    element: <ErrorPage></ErrorPage>
+  }
 ]);
