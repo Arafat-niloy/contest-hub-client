@@ -2,42 +2,44 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import { FaTrophy, FaExternalLinkAlt, FaUserCircle, FaClock } from "react-icons/fa";
 
 const ContestSubmitted = () => {
     const { id } = useParams(); // Contest ID
     const axiosSecure = useAxiosSecure();
 
-    // TanStack Query ব্যবহার করা হলো ডাটা ফেচ এবং অটো রিফ্রেশের জন্য
-    const { data: submissions = [], refetch } = useQuery({
+    // TanStack Query দিয়ে ডাটা ফেচ করা হচ্ছে
+    const { data: submissions = [], refetch, isLoading } = useQuery({
         queryKey: ['submissions', id],
-        queryFn: async() => {
+        queryFn: async () => {
             const res = await axiosSecure.get(`/contest/submissions/${id}`);
             return res.data;
         }
-    })
+    });
 
     const handleDeclareWinner = (submission) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: `Do you want to declare ${submission.name} as the winner?`,
-            icon: "warning",
+            title: "Declare Winner?",
+            text: `Are you sure you want to select ${submission.name} as the winner?`,
+            icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
+            confirmButtonColor: "#FF642F", // Theme Color
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, Declare Winner!"
+            confirmButtonText: "Yes, Confirm!",
+            iconColor: "#FF642F"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    // Payment ID (submission._id) পাঠানো হচ্ছে
                     const res = await axiosSecure.patch(`/contest/winner/${submission._id}`);
 
-                    if(res.data.modifiedCount > 0){
+                    if (res.data.modifiedCount > 0) {
                         Swal.fire({
-                            title: "Success!",
-                            text: `${submission.name} is now the winner!`,
-                            icon: "success"
+                            title: "Congratulations!",
+                            text: `${submission.name} has been declared the winner!`,
+                            icon: "success",
+                            confirmButtonColor: "#FF642F"
                         });
-                        refetch(); // ডাটা রিফ্রেশ করা
+                        refetch();
                     }
                 } catch (error) {
                     console.error(error);
@@ -51,65 +53,111 @@ const ContestSubmitted = () => {
         });
     }
 
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-screen"><span className="loading loading-spinner loading-lg text-[#FF642F]"></span></div>;
+    }
+
     return (
-        <div className="p-4 md:p-10">
-            <h2 className="text-3xl font-bold text-center mb-10 text-gray-800">
-                Submissions: {submissions.length}
-            </h2>
+        <div className="p-8 bg-gray-50 min-h-screen font-sans text-[#1A1A1A]">
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {
-                    submissions.map(item => (
-                        <div key={item._id} className="card bg-base-100 shadow-xl border border-gray-100">
-                            <div className="card-body">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="avatar">
-                                        <div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                                            <img src={item.photo} alt="User" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-lg">{item.name}</h3>
-                                        <p className="text-xs text-gray-500">{item.email}</p>
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+                <div>
+                    <h2 className="text-3xl font-bold text-gray-800">Contest Submissions</h2>
+                    <p className="text-gray-500 mt-1">Review tasks and declare a winner.</p>
+                </div>
+                <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-gray-200 mt-4 md:mt-0">
+                    <span className="font-bold text-gray-600">Total Participants: </span>
+                    <span className="text-[#FF642F] font-bold text-xl ml-2">{submissions.length}</span>
+                </div>
+            </div>
+
+            {/* Submissions Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {submissions.map(item => (
+                    <div 
+                        key={item._id} 
+                        className={`relative bg-white rounded-2xl border transition-all duration-300 group
+                        ${item.status === 'winner' ? 'border-orange-200 shadow-orange-100 shadow-xl' : 'border-gray-100 shadow-md hover:shadow-xl'}`}
+                    >
+                        {/* Winner Badge (Absolute Position) */}
+                        {item.status === 'winner' && (
+                            <div className="absolute -top-4 -right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg z-10 animate-bounce">
+                                <FaTrophy className="text-xl" />
+                            </div>
+                        )}
+
+                        <div className="p-6">
+                            {/* User Info */}
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="avatar">
+                                    <div className={`w-14 h-14 rounded-full p-0.5 ${item.status === 'winner' ? 'bg-gradient-to-r from-yellow-400 to-orange-500' : 'bg-gray-200'}`}>
+                                        <img 
+                                            src={item.photo} 
+                                            alt={item.name} 
+                                            className="rounded-full bg-white object-cover h-full w-full" 
+                                            onError={(e) => {e.target.src="https://i.ibb.co/5c5k7Z7/user.png"}} // Fallback image
+                                        />
                                     </div>
                                 </div>
-                                
-                                <div className="bg-gray-100 p-3 rounded-md mb-4 break-all">
-                                    <p className="text-xs font-bold text-gray-500 uppercase mb-1">Task Link:</p>
-                                    {item.taskSubmission ? (
-                                         <a href={item.taskSubmission} target="_blank" rel="noopener noreferrer" className="link link-primary text-sm">
-                                            {item.taskSubmission}
-                                         </a>
-                                    ) : (
-                                        <span className="text-red-400 text-sm">Not Submitted Yet</span>
-                                    )}
-                                </div>
-                                
-                                <div className="card-actions justify-end mt-2">
-                                    {item.status === 'winner' ? (
-                                        <div className="badge badge-success p-4 text-white font-bold w-full">
-                                            Winner 🏆
-                                        </div>
-                                    ) : (
-                                        <button 
-                                            onClick={() => handleDeclareWinner(item)} 
-                                            // যদি টাস্ক সাবমিট না করে, তবে উইনার করা যাবে না (অপশনাল লজিক)
-                                            disabled={!item.taskSubmission}
-                                            className="btn btn-primary btn-sm w-full"
-                                        >
-                                            Declare Winner
-                                        </button>
-                                    )}
+                                <div>
+                                    <h3 className="font-bold text-lg text-gray-800 line-clamp-1">{item.name}</h3>
+                                    <p className="text-sm text-gray-500 line-clamp-1">{item.email}</p>
                                 </div>
                             </div>
+
+                            {/* Task Submission Box */}
+                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                    <FaExternalLinkAlt /> Task Submission
+                                </p>
+                                {item.taskSubmission ? (
+                                    <a 
+                                        href={item.taskSubmission} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="text-[#FF642F] font-medium text-sm hover:underline break-all line-clamp-2 block"
+                                    >
+                                        {item.taskSubmission}
+                                    </a>
+                                ) : (
+                                    <div className="flex items-center gap-2 text-red-400 text-sm font-medium">
+                                        <FaClock /> Not Submitted Yet
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Action Button */}
+                            <div className="mt-auto">
+                                {item.status === 'winner' ? (
+                                    <div className="w-full bg-green-50 text-green-600 font-bold py-3 rounded-xl border border-green-200 flex items-center justify-center gap-2">
+                                        <FaTrophy /> Winner Selected
+                                    </div>
+                                ) : (
+                                    <button 
+                                        onClick={() => handleDeclareWinner(item)} 
+                                        disabled={!item.taskSubmission}
+                                        className="btn w-full bg-[#FF642F] hover:bg-[#e55a2a] text-white border-none rounded-xl font-bold normal-case text-base disabled:bg-gray-200 disabled:text-gray-400"
+                                    >
+                                        Declare Winner
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    ))
-                }
+                    </div>
+                ))}
             </div>
-            
+
+            {/* Empty State */}
             {submissions.length === 0 && (
-                <div className="text-center mt-10">
-                    <p className="text-gray-500 text-lg">No one has joined this contest yet.</p>
+                <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100 text-center">
+                    <div className="bg-orange-50 p-4 rounded-full mb-4">
+                        <FaUserCircle className="text-4xl text-[#FF642F]" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800">No Participants Yet</h3>
+                    <p className="text-gray-500 mt-2 max-w-sm">
+                        It seems no one has registered for this contest yet. Check back later!
+                    </p>
                 </div>
             )}
         </div>
