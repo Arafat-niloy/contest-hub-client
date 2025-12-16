@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { FaTrophy, FaMedal, FaDollarSign, FaCrown } from "react-icons/fa";
 
 const MyWinning = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
 
-    const { data: payments = [] } = useQuery({
+    const { data: payments = [], isLoading } = useQuery({
         queryKey: ['payments', user?.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/payments?email=${user.email}`);
@@ -14,48 +15,102 @@ const MyWinning = () => {
         }
     });
 
+    // Filter Winning Contests
     const winningContests = payments.filter(contest => contest.status === 'winner');
 
+    // Calculate Total Prize Money
+    const totalPrize = winningContests.reduce((acc, curr) => acc + (curr.prizeMoney || 0), 0);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <span className="loading loading-spinner loading-lg text-[#FF642F]"></span>
+            </div>
+        );
+    }
+
     return (
-        <div>
-            <div className="flex justify-between items-center mb-8">
-                <h2 className="text-3xl font-bold">My Winning Contests</h2>
-                <h2 className="text-xl font-semibold text-primary">Total Wins: {winningContests.length}</h2>
+        <div className="p-8 bg-gray-50 min-h-screen w-full font-sans text-[#1A1A1A]">
+            
+            {/* Stats Header */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <div className="bg-gradient-to-r from-[#FF642F] to-[#ff8e66] rounded-2xl p-6 text-white shadow-lg flex items-center justify-between">
+                    <div>
+                        <h2 className="text-lg opacity-90 font-medium">Total Wins</h2>
+                        <h3 className="text-4xl font-bold mt-1">{winningContests.length}</h3>
+                    </div>
+                    <div className="bg-white/20 p-4 rounded-full">
+                        <FaTrophy className="text-3xl text-white" />
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <h2 className="text-gray-500 font-medium">Total Prize Earned</h2>
+                        <h3 className="text-4xl font-bold text-gray-800 mt-1">${totalPrize}</h3>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-full">
+                        <FaDollarSign className="text-3xl text-green-600" />
+                    </div>
+                </div>
             </div>
 
+            {/* Title */}
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <FaCrown className="text-yellow-500" /> My Winning History
+            </h2>
+
+            {/* Table Section */}
             {winningContests.length > 0 ? (
-                <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+                <div className="overflow-hidden bg-white shadow-xl rounded-2xl border border-gray-100">
                     <table className="table w-full">
-                        {/* head */}
-                        <thead className="bg-gray-200 text-gray-700 uppercase">
+                        {/* Head */}
+                        <thead className="bg-orange-50 text-[#FF642F] text-sm uppercase tracking-wider">
                             <tr>
-                                <th>#</th>
-                                <th>Contest Name</th>
+                                <th className="py-5 pl-8">#</th>
+                                <th>Contest Profile</th>
                                 <th>Category</th>
-                                <th>Prize</th>
+                                <th>Prize Money</th>
                                 <th className="text-center">Status</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-gray-100">
                             {winningContests.map((contest, index) => (
-                                <tr key={contest._id} className="hover:bg-gray-50 transition">
-                                    <th>{index + 1}</th>
+                                <tr key={contest._id} className="hover:bg-gray-50 transition-colors duration-200">
+                                    <th className="pl-8 text-gray-400">{index + 1}</th>
+                                    
+                                    {/* Contest Profile */}
                                     <td>
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-4">
                                             <div className="avatar">
-                                                <div className="mask mask-squircle w-12 h-12">
-                                                    <img src={contest.image} alt="Contest" />
+                                                <div className="w-12 h-12 rounded-xl ring ring-offset-2 ring-[#FF642F]/30">
+                                                    <img src={contest.image} alt="Contest" className="object-cover" />
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className="font-bold">{contest.contestName}</div>
+                                                <div className="font-bold text-gray-800 text-lg">{contest.contestName}</div>
+                                                <div className="text-xs text-gray-400">Winning Entry</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{contest.contestType}</td>
-                                    <td className="font-semibold text-green-600">${contest.prizeMoney}</td>
+
+                                    {/* Category */}
+                                    <td>
+                                        <span className="badge badge-ghost font-medium text-gray-600">
+                                            {contest.contestType}
+                                        </span>
+                                    </td>
+
+                                    {/* Prize */}
+                                    <td className="font-bold text-green-600 text-lg">
+                                        ${contest.prizeMoney}
+                                    </td>
+
+                                    {/* Status Badge */}
                                     <td className="text-center">
-                                        <span className="badge badge-warning font-bold p-3 text-white">Winner 🏆</span>
+                                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full font-bold shadow-sm border border-yellow-200">
+                                            <FaMedal className="text-yellow-600" /> Winner
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -63,10 +118,15 @@ const MyWinning = () => {
                     </table>
                 </div>
             ) : (
-                // যদি কোনো উইনিং না থাকে
-                <div className="flex flex-col items-center justify-center min-h-[300px] space-y-4">
-                    <h2 className="text-2xl font-bold text-gray-400">You haven't won any contests yet.</h2>
-                    <p className="text-gray-500">Keep participating to showcase your skills!</p>
+                /* Empty State */
+                <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-sm border border-dashed border-gray-300">
+                    <div className="bg-gray-50 p-6 rounded-full mb-4">
+                        <FaTrophy className="text-5xl text-gray-300" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-600">No Wins Yet</h2>
+                    <p className="text-gray-400 mt-2 max-w-sm text-center">
+                        Don't lose hope! Keep participating in more contests to show your talent and win prizes.
+                    </p>
                 </div>
             )}
         </div>
