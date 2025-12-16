@@ -4,11 +4,13 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { FaLock } from "react-icons/fa";
 
 const CheckoutForm = ({ contest }) => {
     const [error, setError] = useState('');
     const [clientSecret, setClientSecret] = useState('');
     const [transactionId, setTransactionId] = useState('');
+    const [processing, setProcessing] = useState(false); // পেমেন্ট প্রসেসিং স্টেট
 
     // Hooks
     const stripe = useStripe();
@@ -17,7 +19,7 @@ const CheckoutForm = ({ contest }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    // Destructure contest details (Image সহ)
+    // Destructure contest details
     const { price, contestName, _id, image } = contest || {};
 
     // 1. Load Client Secret from Backend
@@ -25,7 +27,6 @@ const CheckoutForm = ({ contest }) => {
         if (price > 0) {
             axiosSecure.post('/create-payment-intent', { price: price })
                 .then(res => {
-                    console.log('Client Secret:', res.data.clientSecret);
                     setClientSecret(res.data.clientSecret);
                 })
                 .catch(err => console.error("Error creating payment intent:", err));
@@ -40,12 +41,15 @@ const CheckoutForm = ({ contest }) => {
         }
 
         const card = elements.getElement(CardElement);
-
         if (card === null) {
             return;
         }
 
-        // 2. Create Payment Method (Optional Check)
+        // প্রসেসিং শুরু
+        setProcessing(true);
+        setError('');
+
+        // 2. Create Payment Method
         const { error, paymentMethod } = await stripe.createPaymentMethod({
             type: 'card',
             card
@@ -54,9 +58,10 @@ const CheckoutForm = ({ contest }) => {
         if (error) {
             console.log('payment error', error);
             setError(error.message);
+            setProcessing(false); // এরর হলে প্রসেসিং বন্ধ
+            return;
         } else {
             console.log('payment method', paymentMethod);
-            setError('');
         }
 
         // 3. Confirm Payment
@@ -73,11 +78,11 @@ const CheckoutForm = ({ contest }) => {
         if (confirmError) {
             console.log('confirm error', confirmError);
             setError(confirmError.message);
+            setProcessing(false);
         } else {
             console.log('payment intent', paymentIntent);
 
             if (paymentIntent.status === 'succeeded') {
-                console.log('transaction id', paymentIntent.id);
                 setTransactionId(paymentIntent.id);
 
                 // 4. Save Payment Info to Database
@@ -87,10 +92,10 @@ const CheckoutForm = ({ contest }) => {
                     photo: user.photoURL,
                     price: price,
                     transactionId: paymentIntent.id,
-                    date: new Date(), // UTC date conversion recommended for production
+                    date: new Date(),
                     contestId: _id,
                     contestName: contestName,
-                    image: image, // ড্যাশবোর্ডে ছবি দেখানোর জন্য
+                    image: image,
                     taskSubmitted: false,
                     isWinner: false,
                     status: 'paid'
@@ -98,9 +103,7 @@ const CheckoutForm = ({ contest }) => {
 
                 try {
                     const res = await axiosSecure.post('/payments', payment);
-                    console.log('payment saved', res.data);
-
-                    // 👇 গুরুত্ত্বপূর্ণ আপডেট: রিডাইরেক্ট লজিক ঠিক করা হয়েছে
+                    
                     if (res.data?.paymentResult?.insertedId || res.data?.insertedId) {
                         Swal.fire({
                             position: "top-end",
@@ -108,56 +111,83 @@ const CheckoutForm = ({ contest }) => {
                             title: "Payment Successful!",
                             text: `Transaction ID: ${paymentIntent.id}`,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2000
                         }).then(() => {
-                            // টাইমার শেষ হওয়ার পর অথবা ইউজার পপ-আপ বন্ধ করলে এখানে নিয়ে যাবে
                             navigate('/dashboard/my-participated');
                         });
                     }
                 } catch (err) {
-                    console.error("Error saving payment info:", err);
                     setError("Payment successful but failed to save record.");
+                } finally {
+                    setProcessing(false); // সব কাজ শেষে প্রসেসিং বন্ধ
                 }
             }
         }
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="border p-4 rounded-md shadow-sm bg-gray-50 mb-6">
-                <CardElement
-                    options={{
-                        style: {
-                            base: {
-                                fontSize: '16px',
-                                color: '#424770',
-                                '::placeholder': {
-                                    color: '#aab7c4',
+        <form onSubmit={handleSubmit} className="w-full">
+            <div className="mb-6">
+                <label className="block text-gray-600 font-semibold mb-2 ml-1">Card Details</label>
+                <div className="border border-gray-300 p-4 rounded-xl bg-white shadow-sm hover:border-[#FF642F] focus-within:border-[#FF642F] transition-colors duration-300">
+                    <CardElement
+                        options={{
+                            style: {
+                                base: {
+                                    fontSize: '16px',
+                                    color: '#424770',
+                                    fontFamily: 'sans-serif',
+                                    '::placeholder': {
+                                        color: '#aab7c4',
+                                    },
+                                    iconColor: '#FF642F' // কার্ড আইকনের কালার অরেঞ্জ করা হয়েছে
+                                },
+                                invalid: {
+                                    color: '#ef4444', // Red-500
                                 },
                             },
-                            invalid: {
-                                color: '#9e2146',
-                            },
-                        },
-                    }}
-                />
+                        }}
+                    />
+                </div>
             </div>
 
             {/* Error Message */}
-            <p className="text-red-600 text-sm mb-2">{error}</p>
+            {error && (
+                <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm mb-4 border border-red-100 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    {error}
+                </div>
+            )}
 
             {/* Success Message */}
-            {transactionId && <p className="text-green-600 text-sm mb-4"> Transaction ID: {transactionId}</p>}
+            {transactionId && (
+                <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg text-sm mb-4 border border-green-100">
+                    <p className="font-bold">Payment Complete!</p>
+                    <p>Transaction ID: {transactionId}</p>
+                </div>
+            )}
 
             {/* Pay Button */}
             <button
-                className="btn btn-primary w-full  font-bold text-lg disabled:bg-gray-300 disabled:text-gray-500"
+                className="btn w-full rounded-full bg-[#FF642F] hover:bg-[#e05828] text-white border-none shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold text-lg disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-none"
                 type="submit"
-                disabled={!stripe || !clientSecret}
+                disabled={!stripe || !clientSecret || processing || transactionId}
             >
-                {/* লোডিং বা প্রাইস দেখানো */}
-                {price ? `Pay $${price}` : 'Loading...'}
+                {processing ? (
+                    <span className="loading loading-spinner loading-md"></span>
+                ) : (
+                    <div className="flex items-center gap-2">
+                        <FaLock size={16} /> {/* Lock Icon */}
+                        {price ? `Pay Securely $${price}` : 'Loading...'}
+                    </div>
+                )}
             </button>
+            
+            {/* Footer Trust Badge */}
+            <div className="text-center mt-4 text-xs text-gray-400 flex justify-center items-center gap-2">
+                <FaLock className="text-gray-300" />
+                Payments are secure and encrypted
+            </div>
         </form>
     );
 };
