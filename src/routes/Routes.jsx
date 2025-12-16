@@ -5,12 +5,13 @@ import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import Dashboard from "../layout/Dashboard";
 import PrivateRoute from "./PrivateRoute";
-import ErrorPage from "../pages/ErrorPage"; // ✅ 1. ErrorPage Import
+import ErrorPage from "../pages/ErrorPage";
 
 // General Pages
 import AllContests from "../pages/Dashboard/AllContests"; 
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
 import Payment from "../pages/Payment/Payment";
+import Leaderboard from "../pages/Leaderboard/Leaderboard"; // ✅ Leaderboard Import
 
 // Dashboard Common Pages
 import Profile from "../pages/Profile/Profile"; 
@@ -34,7 +35,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
-    errorElement: <ErrorPage></ErrorPage>, // ✅ 2. Main Layout Error Handling
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         path: "/",
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       {
         path: "all-contests",
         element: <AllContests></AllContests>,
+      },
+      {
+        path: "leaderboard", // ✅ Leaderboard Route Added
+        element: <Leaderboard></Leaderboard>,
       },
       {
         path: "contest/:id",
@@ -67,7 +72,7 @@ export const router = createBrowserRouter([
   {
     path: "dashboard",
     element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
-    errorElement: <ErrorPage></ErrorPage>, // Dashboard Error Handling
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       // =================================================
       // DASHBOARD DEFAULT (STATS / HOME)
@@ -131,7 +136,7 @@ export const router = createBrowserRouter([
     ],
   },
   
-  // ✅ 3. Catch-all Route for 404 (Sobar sheshe thakbe)
+  // Catch-all Route for 404
   {
     path: "*",
     element: <ErrorPage></ErrorPage>

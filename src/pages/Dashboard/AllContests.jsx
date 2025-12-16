@@ -11,13 +11,12 @@ const AllContests = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const currentSearch = searchParams.get("search") || ""; 
     
-    // Tab এর জন্য একটি স্টেট, যাতে বুঝা যায় কোনটা একটিভ আছে
-    // যদি URL এ কিছু না থাকে তবে 'all', নাহলে যা সার্চ করা হয়েছে সেটাই
+    // Tab এর জন্য একটি স্টেট
     const [activeTab, setActiveTab] = useState(currentSearch || 'all');
 
     useEffect(() => {
         setLoading(true);
-        // ব্যাকএন্ডে রিকোয়েস্ট পাঠানো হচ্ছে
+        // ব্যাকএন্ডে রিকোয়েস্ট পাঠানো হচ্ছে
         axiosPublic.get(`/contests?search=${currentSearch}`) 
             .then(res => {
                 setContests(res.data);
@@ -27,37 +26,46 @@ const AllContests = () => {
                 console.error(err);
                 setLoading(false);
             });
-    }, [axiosPublic, currentSearch]); // currentSearch চেঞ্জ হলেই ডাটা আবার লোড হবে
+    }, [axiosPublic, currentSearch]);
 
     // Tab এ ক্লিক করলে এই ফাংশন কল হবে
     const handleTabClick = (category) => {
         setActiveTab(category);
         if (category === 'all') {
-            setSearchParams({}); // URL থেকে search সরিয়ে ফেলবে
+            setSearchParams({});
         } else {
-            setSearchParams({ search: category }); // URL এ ?search=CategoryName যোগ করবে
+            setSearchParams({ search: category });
         }
     };
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
+            <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+                <span className="loading loading-spinner loading-lg text-[#FF642F]"></span>
             </div>
         );
     }
 
     return (
-        <div className="w-11/12 mx-auto my-10">
-            <h2 className="text-4xl font-bold text-center mb-8">All Contests</h2>
+        <div className="bg-white min-h-screen pb-20 pt-24 font-sans text-[#1A1A1A]">
+            
+            {/* Header Section */}
+            <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-bold mb-4">Explore Contests</h2>
+                <p className="text-gray-500 text-lg">Browse through categories and find your next challenge</p>
+            </div>
 
-            {/* Tabs / Filter Buttons */}
-            <div className="flex flex-wrap justify-center gap-4 mb-10">
+            {/* Tabs / Filter Buttons (Pill Shape) */}
+            <div className="flex flex-wrap justify-center gap-3 mb-12 px-4">
                 {['all', 'business', 'medical', 'article', 'gaming'].map(cat => (
                     <button 
                         key={cat}
                         onClick={() => handleTabClick(cat)} 
-                        className={`btn capitalize ${activeTab.toLowerCase() === cat.toLowerCase() ? 'btn-primary' : 'btn-outline'}`}
+                        className={`px-6 py-2.5 rounded-full font-semibold capitalize transition-all duration-300 border ${
+                            activeTab.toLowerCase() === cat.toLowerCase() 
+                            ? 'bg-[#FF642F] text-white border-[#FF642F] shadow-md' 
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-[#FF642F] hover:text-[#FF642F]'
+                        }`}
                     >
                         {cat}
                     </button>
@@ -65,36 +73,67 @@ const AllContests = () => {
             </div>
 
             {/* Contests Grid */}
-            {contests.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {contests.map(contest => (
-                        <div key={contest._id} className="card bg-base-100 shadow-xl border">
-                            <figure>
-                                <img src={contest.image} alt={contest.contestName} className="h-60 w-full object-cover" />
-                            </figure>
-                            <div className="card-body">
-                                <h2 className="card-title">
-                                    {contest.contestName}
-                                    <div className="badge badge-secondary">{contest.contestType}</div>
-                                </h2>
-                                <p>{contest.description.slice(0, 100)}...</p>
-                                <p className="font-semibold">Participants: {contest.participationCount}</p>
-                                <div className="card-actions justify-end mt-4">
-                                    <Link to={`/contest/${contest._id}`}>
-                                        <button className="btn btn-primary btn-sm">Details</button>
-                                    </Link>
+            <div className="w-11/12 max-w-screen-2xl mx-auto">
+                {contests.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {contests.map(contest => (
+                            <div key={contest._id} className="card bg-white shadow-lg hover:shadow-2xl border border-gray-100 hover:border-orange-100 transition-all duration-300 rounded-2xl overflow-hidden group">
+                                <figure className="h-60 relative overflow-hidden">
+                                    <img 
+                                        src={contest.image} 
+                                        alt={contest.contestName} 
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                    />
+                                    {/* Type Badge */}
+                                    <div className="absolute top-4 right-4 badge bg-white text-[#FF642F] border-none px-3 py-1.5 font-bold shadow-sm rounded-full capitalize">
+                                        {contest.contestType}
+                                    </div>
+                                </figure>
+                                
+                                <div className="card-body p-6">
+                                    <h2 className="card-title text-xl font-bold text-[#1A1A1A]">
+                                        {contest.contestName}
+                                    </h2>
+                                    <p className="text-gray-500 text-sm mt-2 leading-relaxed">
+                                        {contest.description.slice(0, 90)}...
+                                    </p>
+                                    
+                                    {/* Stats Row */}
+                                    <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                                        <div className="flex items-center gap-2 text-gray-600 font-medium text-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FF642F]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                            {contest.participationCount} Participants
+                                        </div>
+                                    </div>
+
+                                    {/* Action Button */}
+                                    <div className="card-actions mt-5">
+                                        <Link to={`/contest/${contest._id}`} className="w-full">
+                                            <button className="btn bg-transparent hover:bg-[#FF642F] border border-[#FF642F] text-[#FF642F] hover:text-white w-full rounded-full font-bold transition-all">
+                                                View Details
+                                            </button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
+                        ))}
+                    </div>
+                ) : (
+                    // No Data Found State
+                    <div className="flex flex-col items-center justify-center py-24 bg-gray-50 rounded-3xl border border-dashed border-gray-300">
+                        <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
                         </div>
-                    ))}
-                </div>
-            ) : (
-                // No Data Found
-                <div className="flex flex-col items-center justify-center py-20 bg-base-200 rounded-lg">
-                    <h3 className="text-2xl font-bold text-gray-500">No Contests Found!</h3>
-                    <p className="text-gray-400">Try searching with a different keyword or category.</p>
-                </div>
-            )}
+                        <h3 className="text-2xl font-bold text-gray-700">No Contests Found!</h3>
+                        <p className="text-gray-500 mt-2">Try searching with a different keyword or category.</p>
+                        <button onClick={() => {setSearchParams({}); setActiveTab('all')}} className="mt-6 text-[#FF642F] font-bold hover:underline">
+                            Clear Filters
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
