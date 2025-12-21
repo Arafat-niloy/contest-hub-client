@@ -1,95 +1,159 @@
-import React from 'react';
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import { FaCrown, FaTrophy } from "react-icons/fa";
 
 const Leaderboard = () => {
-    // আপাতত আমরা ডামি ডেটা (Mock Data) ব্যবহার করছি। 
-    // পরে এখানে ব্যাকএন্ড থেকে ডেটা লোড (TanStack Query দিয়ে) করব।
-    const users = [
-        { _id: 1, name: "Arafatul Islam", photo: "https://i.ibb.co/tYw53pS/user-avatar.png", winCount: 15 },
-        { _id: 2, name: "Sadia Rahman", photo: "https://randomuser.me/api/portraits/women/44.jpg", winCount: 12 },
-        { _id: 3, name: "Rahim Ahmed", photo: "https://randomuser.me/api/portraits/men/32.jpg", winCount: 10 },
-        { _id: 4, name: "Karim Ullah", photo: "https://randomuser.me/api/portraits/men/85.jpg", winCount: 8 },
-        { _id: 5, name: "Nasrin Akter", photo: "https://randomuser.me/api/portraits/women/65.jpg", winCount: 7 },
-        { _id: 6, name: "John Doe", photo: "https://randomuser.me/api/portraits/men/11.jpg", winCount: 5 },
-    ];
+    const axiosPublic = useAxiosPublic();
+
+    // Fetching Leaderboard Data from the dedicated API
+    const { data: users = [], isLoading } = useQuery({
+        queryKey: ['leaderboard'],
+        queryFn: async () => {
+            // ✅ CHANGE: fetching from /leaderboard instead of /users
+            const res = await axiosPublic.get('/leaderboard'); 
+            return res.data; 
+        }
+    });
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-[60vh]">
+                <span className="loading loading-spinner loading-lg text-[#FF642F]"></span>
+            </div>
+        );
+    }
+
+    // Top 3 Users
+    const topLeaders = users.slice(0, 3);
+    // Rest of the Users
+    const otherLeaders = users.slice(3);
 
     return (
-        <div className="pt-24 pb-10 px-4 max-w-7xl mx-auto">
-            <div className="text-center mb-10">
-                <h2 className="text-4xl font-bold text-gray-900">🏆 Contest Leaderboard</h2>
-                <p className="text-gray-600 mt-2">Top winners based on contest achievements</p>
+        <div className="py-12 px-4 max-w-7xl mx-auto bg-gray-50 min-h-screen">
+            
+            {/* Header */}
+            <div className="text-center mb-16">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-800 flex justify-center items-center gap-3">
+                    <FaTrophy className="text-[#FF642F]" /> Contest Leaderboard
+                </h2>
+                <p className="text-gray-500 mt-3 text-lg">Celebrating our top achievers and winners</p>
             </div>
 
-            {/* Top 3 Leaders Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 items-end">
-                {/* 2nd Place */}
-                <div className="order-2 md:order-1 flex flex-col items-center bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transform hover:-translate-y-2 transition duration-300">
-                    <div className="relative">
-                        <img src={users[1].photo} alt="" className="w-24 h-24 rounded-full border-4 border-gray-300" />
-                        <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-gray-300 text-gray-800 px-3 py-1 rounded-full text-sm font-bold shadow">2nd</div>
-                    </div>
-                    <h3 className="mt-4 text-xl font-bold text-gray-800">{users[1].name}</h3>
-                    <p className="text-[#FF642F] font-bold text-lg">{users[1].winCount} Wins</p>
-                </div>
+            {/* Top 3 Podium Section */}
+            {users.length > 0 && (
+                <div className="flex flex-col md:flex-row justify-center items-end gap-6 md:gap-10 mb-16 px-4">
+                    
+                    {/* 2nd Place */}
+                    {topLeaders[1] && (
+                        <div className="order-2 md:order-1 flex flex-col items-center w-full md:w-1/3">
+                            <div className="relative">
+                                <FaCrown className="absolute -top-8 left-1/2 -translate-x-1/2 text-3xl text-gray-400" />
+                                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-gray-400 p-1 bg-white shadow-xl overflow-hidden">
+                                    <img src={topLeaders[1].photo} alt="User" className="w-full h-full rounded-full object-cover" />
+                                </div>
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">
+                                    2nd
+                                </div>
+                            </div>
+                            <div className="mt-6 text-center bg-white p-6 rounded-2xl w-full shadow-lg border-t-4 border-gray-400">
+                                <h3 className="text-xl font-bold text-gray-800">{topLeaders[1].name}</h3>
+                                <p className="text-[#FF642F] font-bold text-lg mt-1">{topLeaders[1].winCount} Wins</p>
+                            </div>
+                        </div>
+                    )}
 
-                {/* 1st Place (Winner) - Crown Removed */}
-                <div className="order-1 md:order-2 flex flex-col items-center bg-gradient-to-b from-orange-50 to-white p-8 rounded-2xl shadow-xl border border-orange-200 transform scale-110 z-10">
-                    <div className="relative">
-                        {/* Crown Image Removed Here */}
-                        <img src={users[0].photo} alt="" className="w-32 h-32 rounded-full border-4 border-[#FF642F]" />
-                        <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-[#FF642F] text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">1st</div>
-                    </div>
-                    <h3 className="mt-5 text-2xl font-bold text-gray-900">{users[0].name}</h3>
-                    <p className="text-[#FF642F] font-bold text-2xl">{users[0].winCount} Wins</p>
-                </div>
+                    {/* 1st Place (Winner) */}
+                    {topLeaders[0] && (
+                        <div className="order-1 md:order-2 flex flex-col items-center w-full md:w-1/3 transform scale-110 z-10">
+                            <div className="relative">
+                                <FaCrown className="absolute -top-10 left-1/2 -translate-x-1/2 text-5xl text-yellow-500 animate-bounce" />
+                                <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-yellow-500 p-1 bg-white shadow-2xl overflow-hidden ring-4 ring-yellow-100">
+                                    <img src={topLeaders[0].photo} alt="Winner" className="w-full h-full rounded-full object-cover" />
+                                </div>
+                                <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-6 py-1 rounded-full text-base font-bold shadow-lg flex items-center gap-1">
+                                    <FaTrophy /> 1st
+                                </div>
+                            </div>
+                            <div className="mt-8 text-center bg-gradient-to-b from-[#FFF0E6] to-white p-8 rounded-2xl w-full shadow-2xl border-t-4 border-yellow-500">
+                                <h3 className="text-2xl font-bold text-gray-900">{topLeaders[0].name}</h3>
+                                <p className="text-[#FF642F] font-extrabold text-2xl mt-1">{topLeaders[0].winCount} Wins</p>
+                                <p className="text-xs text-gray-400 mt-2 uppercase tracking-widest">Champion</p>
+                            </div>
+                        </div>
+                    )}
 
-                {/* 3rd Place */}
-                <div className="order-3 flex flex-col items-center bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transform hover:-translate-y-2 transition duration-300">
-                    <div className="relative">
-                        <img src={users[2].photo} alt="" className="w-24 h-24 rounded-full border-4 border-yellow-700" />
-                        <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-yellow-700 text-white px-3 py-1 rounded-full text-sm font-bold shadow">3rd</div>
-                    </div>
-                    <h3 className="mt-4 text-xl font-bold text-gray-800">{users[2].name}</h3>
-                    <p className="text-[#FF642F] font-bold text-lg">{users[2].winCount} Wins</p>
+                    {/* 3rd Place */}
+                    {topLeaders[2] && (
+                        <div className="order-3 flex flex-col items-center w-full md:w-1/3">
+                            <div className="relative">
+                                <FaCrown className="absolute -top-8 left-1/2 -translate-x-1/2 text-3xl text-amber-700" />
+                                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-amber-700 p-1 bg-white shadow-xl overflow-hidden">
+                                    <img src={topLeaders[2].photo} alt="User" className="w-full h-full rounded-full object-cover" />
+                                </div>
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-amber-700 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">
+                                    3rd
+                                </div>
+                            </div>
+                            <div className="mt-6 text-center bg-white p-6 rounded-2xl w-full shadow-lg border-t-4 border-amber-700">
+                                <h3 className="text-xl font-bold text-gray-800">{topLeaders[2].name}</h3>
+                                <p className="text-[#FF642F] font-bold text-lg mt-1">{topLeaders[2].winCount} Wins</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            </div>
+            )}
 
-            {/* Rest of the Users Table */}
-            <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-100">
-                <table className="table w-full">
-                    {/* Head */}
-                    <thead className="bg-gray-50 text-gray-600">
-                        <tr>
-                            <th className="py-4 pl-8">Rank</th>
-                            <th>Participant</th>
-                            <th className="text-center">Total Wins</th>
-                            <th className="text-right pr-8">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Rows */}
-                        {users.slice(3).map((user, index) => (
-                            <tr key={user._id} className="hover:bg-gray-50 transition border-b border-gray-100 last:border-none">
-                                <td className="pl-8 font-bold text-gray-500">#{index + 4}</td>
-                                <td>
-                                    <div className="flex items-center gap-3">
-                                        <div className="avatar">
-                                            <div className="mask mask-squircle w-10 h-10">
-                                                <img src={user.photo} alt={user.name} />
+            {/* Rest of the Leaders List */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 max-w-5xl mx-auto">
+                <div className="p-6 bg-[#FF642F] bg-opacity-10 border-b border-[#FF642F] border-opacity-20">
+                    <h3 className="text-xl font-bold text-gray-800">All Participants Ranking</h3>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="table w-full">
+                        <thead className="bg-gray-50 text-gray-500 uppercase text-sm">
+                            <tr>
+                                <th className="py-5 pl-8">Rank</th>
+                                <th>Participant</th>
+                                <th className="text-center">Total Wins</th>
+                                <th className="text-right pr-8">Badge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {otherLeaders.map((user, index) => (
+                                <tr key={index} className="hover:bg-orange-50 transition border-b border-gray-100 last:border-none">
+                                    <td className="pl-8 font-bold text-gray-400 text-lg">#{index + 4}</td>
+                                    <td>
+                                        <div className="flex items-center gap-4">
+                                            <div className="avatar">
+                                                <div className="mask mask-circle w-12 h-12 ring ring-[#FF642F] ring-offset-base-100 ring-offset-2">
+                                                    <img src={user.photo} alt={user.name} />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-gray-800 text-lg">{user.name}</div>
+                                                {/* Email might be _id due to grouping */}
+                                                <div className="text-sm text-gray-500">{user._id}</div> 
                                             </div>
                                         </div>
-                                        <div>
-                                            <div className="font-bold text-gray-800">{user.name}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="text-center font-bold text-[#FF642F]">{user.winCount}</td>
-                                <td className="text-right pr-8">
-                                    <span className="badge badge-ghost badge-sm">Contestant</span>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                    </td>
+                                    <td className="text-center font-bold text-[#FF642F] text-xl">{user.winCount}</td>
+                                    <td className="text-right pr-8">
+                                        <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold border border-gray-200">
+                                            Contestant
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                            {users.length === 0 && (
+                                <tr>
+                                    <td colSpan="4" className="text-center py-8 text-gray-400">
+                                        No winners found yet.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

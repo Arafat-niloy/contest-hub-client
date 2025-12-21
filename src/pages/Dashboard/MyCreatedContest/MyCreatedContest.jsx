@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
-import { FaTrash, FaListAlt, FaEye } from "react-icons/fa";
+import { FaTrash, FaListAlt, FaEye, FaEdit } from "react-icons/fa"; // FaEdit ইম্পোর্ট করা হয়েছে
 import Swal from "sweetalert2";
 
 const MyCreatedContest = () => {
@@ -116,29 +116,49 @@ const MyCreatedContest = () => {
 
                                     {/* Status Badge */}
                                     <td>
-                                        {contest.status === 'accepted' ? (
+                                        {contest.status === 'accepted' && (
                                             <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-bold border border-green-200">
-                                                <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                                                Accepted
+                                                <span className="w-2 h-2 rounded-full bg-green-500"></span> Accepted
                                             </span>
-                                        ) : (
+                                        )}
+                                        {contest.status === 'pending' && (
                                             <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 py-1 px-3 rounded-full text-xs font-bold border border-yellow-200">
-                                                <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                                                Pending
+                                                <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span> Pending
+                                            </span>
+                                        )}
+                                        {contest.status === 'rejected' && (
+                                            <span className="inline-flex items-center gap-1 bg-red-100 text-red-700 py-1 px-3 rounded-full text-xs font-bold border border-red-200">
+                                                <span className="w-2 h-2 rounded-full bg-red-500"></span> Rejected
                                             </span>
                                         )}
                                     </td>
 
-                                    {/* Delete Action */}
-                                    <td className="flex justify-center py-6">
-                                        <div className="tooltip" data-tip="Delete Contest">
-                                            <button 
-                                                onClick={() => handleDelete(contest._id)}
-                                                className="btn btn-sm btn-circle bg-red-50 text-red-500 hover:bg-red-500 hover:text-white border-red-200 hover:border-red-500 transition-all duration-300 shadow-sm hover:shadow-md"
-                                            >
-                                                <FaTrash className="text-sm"/>
-                                            </button>
-                                        </div>
+                                    {/* Action Column (Edit & Delete - Only if Pending) */}
+                                    <td className="text-center">
+                                        {contest.status === 'pending' ? (
+                                            <div className="flex justify-center gap-3">
+                                                {/* Edit Button */}
+                                                <div className="tooltip" data-tip="Edit Contest">
+                                                    <Link to={`/dashboard/contest/edit/${contest._id}`}>
+                                                        <button className="btn btn-sm btn-circle bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border-blue-200 hover:border-blue-600 transition-all duration-300">
+                                                            <FaEdit className="text-sm" />
+                                                        </button>
+                                                    </Link>
+                                                </div>
+
+                                                {/* Delete Button */}
+                                                <div className="tooltip" data-tip="Delete Contest">
+                                                    <button 
+                                                        onClick={() => handleDelete(contest._id)}
+                                                        className="btn btn-sm btn-circle bg-red-50 text-red-500 hover:bg-red-500 hover:text-white border-red-200 hover:border-red-500 transition-all duration-300"
+                                                    >
+                                                        <FaTrash className="text-sm"/>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-gray-400 italic">Not editable</span>
+                                        )}
                                     </td>
 
                                     {/* View Submissions */}

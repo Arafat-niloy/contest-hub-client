@@ -1,171 +1,276 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../providers/AuthProvider"; 
-import useAxiosSecure from "../../hooks/useAxiosSecure"; // Secure ব্যবহার করা ভালো
+import { AuthContext } from "../../providers/AuthProvider";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
-import { FaUser, FaCamera, FaEnvelope, FaSave, FaIdCard } from "react-icons/fa";
+import {
+  FaUser,
+  FaCamera,
+  FaEnvelope,
+  FaSave,
+  FaQuoteLeft,
+  FaChartPie,
+} from "react-icons/fa";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 const Profile = () => {
-    const { user, updateUserProfile } = useContext(AuthContext); // updateUserProfile context থেকে আনা হলো
-    const axiosSecure = useAxiosSecure();
-    const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
+  const { user, updateUserProfile } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
 
-    // Form States
-    const [name, setName] = useState("");
-    const [photo, setPhoto] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
-        if (user) {
-            setName(user.displayName || "");
-            setPhoto(user.photoURL || "");
-            setLoading(false);
-        }
-    }, [user]);
+  // Form States
+  const [name, setName] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [bio, setBio] = useState("");
 
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        
-        const updateInfo = {
-            name: name,
-            photo: photo
-        };
+  // Stats States (instruction-based)
+  const [stats, setStats] = useState({
+    totalWins: 0,
+    totalParticipated: 0,
+  });
 
-        try {
-            // ১. ফায়ারবেস প্রোফাইল আপডেট (রিলোড ছাড়া UI আপডেটের জন্য)
-            await updateUserProfile(name, photo);
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (!user?.email) return;
 
-            // ২. ডাটাবেসে আপডেট
-            const res = await axiosSecure.put(`/users/${user.email}`, updateInfo);
-            
-            if (res.data.modifiedCount > 0 || res.data.matchedCount > 0) {
-                Swal.fire({
-                    title: "Profile Updated!",
-                    text: "Your profile has been updated successfully.",
-                    icon: "success",
-                    confirmButtonColor: "#FF642F"
-                });
-            }
-        } catch (error) {
-            console.error(error);
-            Swal.fire({
-                title: "Error!",
-                text: "Failed to update profile.",
-                icon: "error",
-                confirmButtonColor: "#FF642F"
-            });
-        } finally {
-            setSubmitting(false);
-        }
+      try {
+        // ✅ SINGLE SOURCE OF TRUTH (Instruction follow)
+        const statsRes = await axiosSecure.get(
+          `/my-winning-stats/${user.email}`
+        );
+
+        setStats({
+          totalWins: statsRes.data.totalWins || 0,
+          totalParticipated: statsRes.data.totalParticipated || 0,
+        });
+
+        // User basic info
+        setName(user.displayName || "");
+        setPhoto(user.photoURL || "");
+        setBio(user.bio || "Contest Enthusiast!");
+      } catch (error) {
+        console.error("Profile load error:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-[80vh]">
-                <span className="loading loading-spinner loading-lg text-[#FF642F]"></span>
-            </div>
-        );
+    fetchProfileData();
+  }, [user, axiosSecure]);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    const updateInfo = {
+      name,
+      photo,
+      bio,
+    };
+
+    try {
+      await updateUserProfile(name, photo);
+      const res = await axiosSecure.put(
+        `/users/${user.email}`,
+        updateInfo
+      );
+
+      if (res.data.modifiedCount > 0 || res.data.matchedCount > 0) {
+        Swal.fire({
+          title: "Profile Updated!",
+          text: "Your profile information has been updated successfully.",
+          icon: "success",
+          confirmButtonColor: "#FF642F",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to update profile.",
+        icon: "error",
+        confirmButtonColor: "#FF642F",
+      });
+    } finally {
+      setSubmitting(false);
     }
+  };
 
+  // ✅ Chart Data (Won / Participated)
+  const chartData = [
+    { name: "Won", value: stats.totalWins },
+    {
+      name: "Pending / Lost",
+      value: Math.max(0, stats.totalParticipated - stats.totalWins),
+    },
+  ];
+
+  const COLORS = ["#FF642F", "#E5f"];
+
+  if (loading) {
     return (
-        <div className="w-full p-4 md:p-10 bg-gray-50 min-h-screen flex items-center justify-center">
-            <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white shadow-2xl rounded-2xl overflow-hidden">
-                
-                {/* Left Side: Display Info (Gradient Background) */}
-                <div className="w-full md:w-2/5 bg-gradient-to-br from-[#FF642F] to-[#F97316] text-white flex flex-col items-center justify-center p-10 relative">
-                    {/* Decoratiive Circle */}
-                    <div className="absolute top-0 left-0 w-32 h-32 bg-white opacity-10 rounded-full -translate-x-10 -translate-y-10"></div>
-                    <div className="absolute bottom-0 right-0 w-24 h-24 bg-black opacity-10 rounded-full translate-x-5 translate-y-5"></div>
-
-                    <div className="avatar mb-6">
-                        <div className="w-40 rounded-full ring-4 ring-white ring-offset-4 ring-offset-[#FF642F] shadow-lg">
-                            <img src={photo || user?.photoURL} alt="Profile" className="object-cover" />
-                        </div>
-                    </div>
-                    <h2 className="text-3xl font-bold text-center">{name || user?.displayName}</h2>
-                    
-                    <div className="flex items-center gap-2 mt-2 opacity-90">
-                        <FaEnvelope /> <span>{user?.email}</span>
-                    </div>
-
-                    <div className="mt-6 bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full flex items-center gap-2 border border-white/30">
-                        <FaIdCard />
-                        <span className="text-sm font-mono">ID: {user?.uid?.slice(0, 8)}...</span>
-                    </div>
-                </div>
-
-                {/* Right Side: Update Form */}
-                <div className="w-full md:w-3/5 p-8 md:p-12">
-                    <div className="mb-8">
-                        <h2 className="text-3xl font-bold text-gray-800">Edit Profile</h2>
-                        <p className="text-gray-500 mt-1">Update your personal details here.</p>
-                    </div>
-
-                    <form onSubmit={handleUpdate} className="space-y-6">
-                        
-                        {/* Name Input */}
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-semibold text-gray-700">Full Name</span>
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                    <FaUser />
-                                </div>
-                                <input 
-                                    type="text" 
-                                    value={name} 
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="input input-bordered w-full pl-10 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50" 
-                                    placeholder="Type your name"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Photo URL Input */}
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-semibold text-gray-700">Profile Photo URL</span>
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                    <FaCamera />
-                                </div>
-                                <input 
-                                    type="text" 
-                                    value={photo} 
-                                    onChange={(e) => setPhoto(e.target.value)}
-                                    className="input input-bordered w-full pl-10 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50" 
-                                    placeholder="http://example.com/photo.jpg"
-                                />
-                            </div>
-                            <label className="label">
-                                <span className="label-text-alt text-gray-400">Paste a direct image link from an image host.</span>
-                            </label>
-                        </div>
-
-                        {/* Submit Button */}
-                        <div className="form-control mt-8">
-                            <button 
-                                type="submit" 
-                                disabled={submitting}
-                                className="btn bg-[#FF642F] hover:bg-[#e55a2a] text-white w-full md:w-auto text-lg px-8 border-none shadow-md hover:shadow-lg transition-all"
-                            >
-                                {submitting ? (
-                                    <span className="loading loading-spinner"></span>
-                                ) : (
-                                    <>
-                                        <FaSave className="mr-2" /> Save Changes
-                                    </>
-                                )}
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-        </div>
+      <div className="flex justify-center items-center h-[80vh]">
+        <span className="loading loading-spinner loading-lg text-[#FF642F]"></span>
+      </div>
     );
+  }
+
+  return (
+    <div className="w-full p-4 md:p-10 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto space-y-8">
+        {/* Header Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Profile Card */}
+          <div className="md:col-span-2 bg-gradient-to-r from-[#FF642F] to-[#F97316] rounded-3xl p-8 text-white flex flex-col md:flex-row items-center gap-8 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"></div>
+
+            <div className="avatar">
+              <div className="w-32 rounded-full ring-4 ring-white/30 shadow-2xl">
+                <img src={user?.photoURL} alt="User" />
+              </div>
+            </div>
+
+            <div className="text-center md:text-left z-10">
+              <h1 className="text-3xl font-bold">
+                {user?.displayName}
+              </h1>
+              <p className="opacity-80 flex items-center justify-center md:justify-start gap-2 mt-1">
+                <FaEnvelope className="text-sm" /> {user?.email}
+              </p>
+
+              <div className="mt-4 p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/20">
+                <p className="text-sm italic flex gap-2">
+                  <FaQuoteLeft className="text-white/50" />
+                  {bio || "No bio added yet."}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Win Ratio Chart Card */}
+          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 flex flex-col items-center justify-center ">
+            <h3 className="text-gray-700 font-bold flex items-center gap-2 mb-2">
+              <FaChartPie className="text-[#FF642F]" />
+              Winning Ratio
+            </h3>
+
+            <div className="w-full h-52">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {chartData.map((_, index) => (
+                      <Cell
+                        key={index}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend verticalAlign="bottom" height={36} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <p className="text-xs text-gray-400 mt-2">
+              Based on {stats.totalParticipated} participations
+            </p>
+          </div>
+        </div>
+
+        {/* Edit Form Section */}
+        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-gray-100">
+          <div className="mb-10 border-b pb-4">
+            <h2 className="text-2xl font-bold text-gray-800">
+              Account Settings
+            </h2>
+            <p className="text-gray-500">
+              Update your profile information and bio.
+            </p>
+          </div>
+
+          <form
+            onSubmit={handleUpdate}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          >
+            {/* Full Name */}
+            <div className="form-control">
+              <label className="label font-semibold text-gray-700">
+                Full Name
+              </label>
+              <div className="relative">
+                <FaUser className="absolute left-3 top-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="input input-bordered pl-2 w-full border"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Photo URL */}
+            <div className="form-control">
+              <label className="label font-semibold text-gray-700">
+                Profile Photo URL
+              </label>
+              <div className="relative">
+                <FaCamera className="absolute left-3 top-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={photo}
+                  onChange={(e) => setPhoto(e.target.value)}
+                  className="input input-bordered border w-full pl-2"
+                />
+              </div>
+            </div>
+
+            {/* Bio */}
+            <div className="form-control md:col-span-2 space-x-2">
+              <label className="label font-semibold text-gray-700">
+                Bio
+              </label>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                className="textarea textarea-bordered h-24 border p-2"
+                placeholder="Tell us about your skills or goals..."
+              ></textarea>
+            </div>
+
+            <div className="md:col-span-2">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn bg-[#FF642F] hover:bg-[#e55a2a] text-white px-10 border-none shadow-lg"
+              >
+                {submitting ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  <>
+                    <FaSave /> Update Profile
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Profile;

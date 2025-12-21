@@ -11,7 +11,7 @@ import ErrorPage from "../pages/ErrorPage";
 import AllContests from "../pages/Dashboard/AllContests"; 
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
 import Payment from "../pages/Payment/Payment";
-import Leaderboard from "../pages/Leaderboard/Leaderboard"; // ✅ Leaderboard Import
+import Leaderboard from "../pages/Leaderboard/Leaderboard"; 
 
 // Dashboard Common Pages
 import Profile from "../pages/Profile/Profile"; 
@@ -26,6 +26,7 @@ import MyWinning from "../pages/Dashboard/MyWinning";
 import AddContest from "../pages/Dashboard/AddContest";
 import MyCreatedContest from "../pages/Dashboard/MyCreatedContest/MyCreatedContest";
 import ContestSubmitted from "../pages/Dashboard/MyCreatedContest/ContestSubmitted"; 
+import EditContest from "../pages/Dashboard/Creator/EditContest"; // ✅ (New Import) ফাইল লোকেশন চেক করে নিন
 
 // Dashboard - Admin Pages
 import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
@@ -46,7 +47,7 @@ export const router = createBrowserRouter([
         element: <AllContests></AllContests>,
       },
       {
-        path: "leaderboard", // ✅ Leaderboard Route Added
+        path: "leaderboard", 
         element: <Leaderboard></Leaderboard>,
       },
       {
@@ -75,7 +76,7 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage></ErrorPage>,
     children: [
       // =================================================
-      // DASHBOARD DEFAULT (STATS / HOME)
+      // DASHBOARD DEFAULT
       // =================================================
       {
         index: true,
@@ -83,7 +84,7 @@ export const router = createBrowserRouter([
       },
 
       // =================================================
-      // COMMON DASHBOARD ROUTES (For All Users)
+      // COMMON ROUTES
       // =================================================
       {
         path: 'profile',
@@ -91,7 +92,7 @@ export const router = createBrowserRouter([
       },
 
       // =================================================
-      // USER ROUTES
+      // USER ROUTES (ব্যাবহারকারী)
       // =================================================
       {
         path: "my-participated",
@@ -102,12 +103,13 @@ export const router = createBrowserRouter([
         element: <MyWinning></MyWinning>,
       },
       {
-        path: "payment/submit/:id", // :id = Payment _id
+        // এই রাউটটি MyRegisteredContests থেকে আসা লিংকের সাথে মিল রাখা হয়েছে
+        path: "payment/submit/:id", 
         element: <SubmitTask></SubmitTask>,
       },
 
       // =================================================
-      // CREATOR ROUTES
+      // CREATOR ROUTES (কন্টেস্ট ক্রিয়েটর)
       // =================================================
       {
         path: "add-contest",
@@ -118,12 +120,17 @@ export const router = createBrowserRouter([
         element: <MyCreatedContest></MyCreatedContest>,
       },
       {
-        path: "contest/submitted/:id", // :id = Contest _id
+        path: "contest/submitted/:id", 
         element: <ContestSubmitted></ContestSubmitted>,
+      },
+      {
+        // ✅ NEW EDIT ROUTE ADDED HERE
+        path: "contest/edit/:id",
+        element: <EditContest></EditContest>
       },
 
       // =================================================
-      // ADMIN ROUTES
+      // ADMIN ROUTES (অ্যাডমিন)
       // =================================================
       {
         path: "manage-users",
@@ -136,7 +143,6 @@ export const router = createBrowserRouter([
     ],
   },
   
-  // Catch-all Route for 404
   {
     path: "*",
     element: <ErrorPage></ErrorPage>
