@@ -32,6 +32,9 @@ import EditContest from "../pages/Dashboard/Creator/EditContest";
 import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
 import ManageContests from "../pages/Dashboard/ManageContests/ManageContests";
 
+// বেস ইউআরএল সেট করে রাখা যাতে বারবার লিখতে না হয়
+const API_URL = "https://contesthub-server-psi.vercel.app";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -53,12 +56,14 @@ export const router = createBrowserRouter([
       {
         path: "contest/:id",
         element: <PrivateRoute><ContestDetails></ContestDetails></PrivateRoute>,
-        loader: ({ params }) => fetch(`http://localhost:5000/contests/${params.id}`),
+        // ✅ আপডেট করা হয়েছে: লোকালহোস্ট পরিবর্তন করে ভেরসেল লিঙ্ক দেওয়া হয়েছে
+        loader: ({ params }) => fetch(`${API_URL}/contests/${params.id}`),
       },
       {
         path: "payment/:id",
         element: <PrivateRoute><Payment></Payment></PrivateRoute>,
-        loader: ({ params }) => fetch(`http://localhost:5000/contests/${params.id}`),
+        // ✅ আপডেট করা হয়েছে: লোকালহোস্ট পরিবর্তন করে ভেরসেল লিঙ্ক দেওয়া হয়েছে
+        loader: ({ params }) => fetch(`${API_URL}/contests/${params.id}`),
       },
       {
         path: "login",
@@ -75,25 +80,14 @@ export const router = createBrowserRouter([
     element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
     errorElement: <ErrorPage></ErrorPage>,
     children: [
-      // =================================================
-      // DASHBOARD DEFAULT
-      // =================================================
       {
         index: true,
         element: <DashboardHome></DashboardHome>, 
       },
-
-      // =================================================
-      // COMMON ROUTES
-      // =================================================
       {
         path: 'profile',
         element: <PrivateRoute><Profile></Profile></PrivateRoute>
       },
-
-      // =================================================
-      // USER ROUTES 
-      // =================================================
       {
         path: "my-participated",
         element: <MyParticipated></MyParticipated>,
@@ -106,10 +100,6 @@ export const router = createBrowserRouter([
         path: "payment/submit/:id", 
         element: <SubmitTask></SubmitTask>,
       },
-
-      // =================================================
-      // CREATOR ROUTES 
-      // =================================================
       {
         path: "add-contest",
         element: <AddContest></AddContest>,
@@ -126,10 +116,6 @@ export const router = createBrowserRouter([
         path: "contest/edit/:id",
         element: <EditContest></EditContest>
       },
-
-      // =================================================
-      // ADMIN ROUTES 
-      // =================================================
       {
         path: "manage-users",
         element: <ManageUsers></ManageUsers>,
@@ -140,7 +126,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  
   {
     path: "*",
     element: <ErrorPage></ErrorPage>
