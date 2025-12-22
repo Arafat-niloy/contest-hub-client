@@ -48,14 +48,16 @@ const AddContest = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen w-full font-sans text-[#1A1A1A]">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+    // ✅ Main Container Dark Mode
+    <div className="p-8 bg-gray-50 dark:bg-gray-900 min-h-screen w-full font-sans text-[#1A1A1A] dark:text-gray-100 transition-colors duration-300">
+      <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
+        
         {/* Header */}
-        <div className="bg-orange-50 p-8 border-b border-orange-100">
-          <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+        <div className="bg-orange-50 dark:bg-orange-900/10 p-8 border-b border-orange-100 dark:border-gray-700">
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
             <FaTrophy className="text-[#FF642F]" /> Create New Contest
           </h2>
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
             Fill in the details below to launch a new challenge.
           </p>
         </div>
@@ -65,7 +67,7 @@ const AddContest = () => {
           {/* Row 1: Name & Image */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="form-control w-full">
-              <label className="label font-semibold text-gray-600">
+              <label className="label font-semibold text-gray-600 dark:text-gray-300">
                 <span className="flex items-center gap-2">
                   <FaTrophy className="text-xs" /> Contest Name
                 </span>
@@ -74,12 +76,12 @@ const AddContest = () => {
                 type="text"
                 placeholder="E.g., Logo Design Challenge"
                 {...register("contestName", { required: true })}
-                className="input input-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50"
+                className="input input-bordered pl-2 w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
               />
             </div>
 
             <div className="form-control w-full">
-              <label className="label font-semibold text-gray-600">
+              <label className="label font-semibold text-gray-600 dark:text-gray-300">
                 <span className="flex items-center gap-2">
                   <FaImage className="text-xs" /> Image URL
                 </span>
@@ -88,7 +90,7 @@ const AddContest = () => {
                 type="text"
                 placeholder="https://example.com/image.jpg"
                 {...register("image", { required: true })}
-                className="input input-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50"
+                className="input input-bordered pl-2 w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
               />
             </div>
           </div>
@@ -96,7 +98,7 @@ const AddContest = () => {
           {/* Row 2: Type & Deadline */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="form-control w-full">
-              <label className="label font-semibold text-gray-600">
+              <label className="label font-semibold text-gray-600 dark:text-gray-300">
                 <span className="flex items-center gap-2">
                   <FaListUl className="text-xs" /> Contest Type
                 </span>
@@ -104,7 +106,7 @@ const AddContest = () => {
               <select
                 defaultValue="default"
                 {...register("contestType", { required: true })}
-                className="select select-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50"
+                className="select select-bordered pl-2 w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
               >
                 <option disabled value="default">
                   Select a Category
@@ -117,7 +119,7 @@ const AddContest = () => {
             </div>
 
             <div className="form-control w-full">
-              <label className="label font-semibold text-gray-600">
+              <label className="label font-semibold text-gray-600 dark:text-gray-300">
                 <span className="flex items-center gap-2">
                   <FaCalendarAlt className="text-xs" /> Deadline
                 </span>
@@ -125,7 +127,7 @@ const AddContest = () => {
               <input
                 type="date"
                 {...register("deadline", { required: true })}
-                className="input input-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50"
+                className="input pl-2 input-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:[color-scheme:dark]"
               />
             </div>
           </div>
@@ -133,7 +135,7 @@ const AddContest = () => {
           {/* Row 3: Price & Prize */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="form-control w-full">
-              <label className="label font-semibold text-gray-600">
+              <label className="label font-semibold text-gray-600 dark:text-gray-300">
                 <span className="flex items-center gap-2">
                   <FaDollarSign className="text-xs" /> Entry Price ($)
                 </span>
@@ -143,12 +145,12 @@ const AddContest = () => {
                 step="0.01"
                 placeholder="0.00"
                 {...register("price", { required: true })}
-                className="input input-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50"
+                className="input pl-2 input-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
               />
             </div>
 
             <div className="form-control w-full">
-              <label className="label font-semibold text-gray-600">
+              <label className="label font-semibold text-gray-600 dark:text-gray-300">
                 <span className="flex items-center gap-2">
                   <FaDollarSign className="text-xs" /> Prize Money ($)
                 </span>
@@ -158,35 +160,35 @@ const AddContest = () => {
                 step="0.01"
                 placeholder="0.00"
                 {...register("prizeMoney", { required: true })}
-                className="input input-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50"
+                className="input pl-2 input-bordered w-full focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
               />
             </div>
           </div>
 
           {/* Description */}
-          <div className="form-control w-full mb-6 space-x-4 ">
-            <label className="label font-semibold text-gray-600">
+          <div className="form-control w-full mb-6 space-x-2">
+            <label className="label font-semibold text-gray-600 dark:text-gray-300">
               <span className="flex items-center gap-2">
                 <FaAlignLeft className="text-xs" /> Description
               </span>
             </label>
             <textarea
               {...register("description", { required: true })}
-              className="textarea p-2 textarea-bordered h-24 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50"
+              className="textarea p-2 textarea-bordered h-24 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
               placeholder="Write a detailed description of the contest..."
             ></textarea>
           </div>
 
           {/* Task Instruction */}
-          <div className="form-control w-full mb-8 space-x-4">
-            <label className="label font-semibold text-gray-600">
+          <div className="form-control w-full mb-8 space-x-2">
+            <label className="label font-semibold text-gray-600 dark:text-gray-300">
               <span className="flex items-center gap-2">
                 <FaListUl className="text-xs" /> Task Instruction
               </span>
             </label>
             <textarea
               {...register("taskInstruction", { required: true })}
-              className="textarea p-2 textarea-bordered h-24 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50"
+              className="textarea p-2 textarea-bordered h-24 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
               placeholder="Explain exactly what participants need to submit..."
             ></textarea>
           </div>

@@ -10,7 +10,7 @@ const CheckoutForm = ({ contest }) => {
     const [error, setError] = useState('');
     const [clientSecret, setClientSecret] = useState('');
     const [transactionId, setTransactionId] = useState('');
-    const [processing, setProcessing] = useState(false); // পেমেন্ট প্রসেসিং স্টেট
+    const [processing, setProcessing] = useState(false);
 
     // Hooks
     const stripe = useStripe();
@@ -19,7 +19,6 @@ const CheckoutForm = ({ contest }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    // Destructure contest details
     const { price, contestName, _id, image } = contest || {};
 
     // 1. Load Client Secret from Backend
@@ -45,7 +44,6 @@ const CheckoutForm = ({ contest }) => {
             return;
         }
 
-        // প্রসেসিং শুরু
         setProcessing(true);
         setError('');
 
@@ -58,7 +56,7 @@ const CheckoutForm = ({ contest }) => {
         if (error) {
             console.log('payment error', error);
             setError(error.message);
-            setProcessing(false); // এরর হলে প্রসেসিং বন্ধ
+            setProcessing(false);
             return;
         } else {
             console.log('payment method', paymentMethod);
@@ -119,7 +117,7 @@ const CheckoutForm = ({ contest }) => {
                 } catch (err) {
                     setError("Payment successful but failed to save record.");
                 } finally {
-                    setProcessing(false); // সব কাজ শেষে প্রসেসিং বন্ধ
+                    setProcessing(false);
                 }
             }
         }
@@ -128,22 +126,25 @@ const CheckoutForm = ({ contest }) => {
     return (
         <form onSubmit={handleSubmit} className="w-full">
             <div className="mb-6">
-                <label className="block text-gray-600 font-semibold mb-2 ml-1">Card Details</label>
-                <div className="border border-gray-300 p-4 rounded-xl bg-white shadow-sm hover:border-[#FF642F] focus-within:border-[#FF642F] transition-colors duration-300">
+                {/* 1. Label Color Updated */}
+                <label className="block text-gray-600 dark:text-gray-300 font-semibold mb-2 ml-1">Card Details</label>
+                
+                {/* 2. Input Wrapper: Background kept white for Stripe text visibility, but border adapted */}
+                <div className="border border-gray-300 dark:border-gray-600 p-4 rounded-xl bg-white shadow-sm hover:border-[#FF642F] focus-within:border-[#FF642F] transition-colors duration-300">
                     <CardElement
                         options={{
                             style: {
                                 base: {
                                     fontSize: '16px',
-                                    color: '#424770',
+                                    color: '#424770', // Dark text works best on the white background
                                     fontFamily: 'sans-serif',
                                     '::placeholder': {
                                         color: '#aab7c4',
                                     },
-                                    iconColor: '#FF642F' // কার্ড আইকনের কালার অরেঞ্জ করা হয়েছে
+                                    iconColor: '#FF642F'
                                 },
                                 invalid: {
-                                    color: '#ef4444', // Red-500
+                                    color: '#ef4444',
                                 },
                             },
                         }}
@@ -151,25 +152,25 @@ const CheckoutForm = ({ contest }) => {
                 </div>
             </div>
 
-            {/* Error Message */}
+            {/* 3. Error Message Dark Mode */}
             {error && (
-                <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm mb-4 border border-red-100 flex items-center gap-2">
+                <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-300 px-4 py-3 rounded-lg text-sm mb-4 border border-red-100 dark:border-red-800 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
                     {error}
                 </div>
             )}
 
-            {/* Success Message */}
+            {/* 4. Success Message Dark Mode */}
             {transactionId && (
-                <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg text-sm mb-4 border border-green-100">
+                <div className="bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-300 px-4 py-3 rounded-lg text-sm mb-4 border border-green-100 dark:border-green-800">
                     <p className="font-bold">Payment Complete!</p>
                     <p>Transaction ID: {transactionId}</p>
                 </div>
             )}
 
-            {/* Pay Button */}
+            {/* 5. Pay Button Disabled State for Dark Mode */}
             <button
-                className="btn w-full rounded-full bg-[#FF642F] hover:bg-[#e05828] text-white border-none shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold text-lg disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-none"
+                className="btn w-full rounded-full bg-[#FF642F] hover:bg-[#e05828] text-white border-none shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold text-lg disabled:bg-gray-200 dark:disabled:bg-gray-700 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed disabled:shadow-none"
                 type="submit"
                 disabled={!stripe || !clientSecret || processing || transactionId}
             >
@@ -177,15 +178,15 @@ const CheckoutForm = ({ contest }) => {
                     <span className="loading loading-spinner loading-md"></span>
                 ) : (
                     <div className="flex items-center gap-2">
-                        <FaLock size={16} /> {/* Lock Icon */}
+                        <FaLock size={16} /> 
                         {price ? `Pay Securely $${price}` : 'Loading...'}
                     </div>
                 )}
             </button>
             
-            {/* Footer Trust Badge */}
-            <div className="text-center mt-4 text-xs text-gray-400 flex justify-center items-center gap-2">
-                <FaLock className="text-gray-300" />
+            {/* 6. Footer Text Dark Mode */}
+            <div className="text-center mt-4 text-xs text-gray-400 dark:text-gray-500 flex justify-center items-center gap-2">
+                <FaLock className="text-gray-300 dark:text-gray-600" />
                 Payments are secure and encrypted
             </div>
         </form>

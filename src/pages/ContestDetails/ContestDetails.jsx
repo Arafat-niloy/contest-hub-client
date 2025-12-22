@@ -9,12 +9,13 @@ const ContestDetails = () => {
     const isDeadlineOver = new Date(deadline) < new Date();
 
     return (
-        <div className="bg-white min-h-screen pt-24 pb-20 font-sans text-[#1A1A1A]">
+        // ✅ 1. Main Container Dark Mode
+        <div className="bg-white dark:bg-gray-900 min-h-screen pt-24 pb-20 font-sans text-[#1A1A1A] dark:text-gray-100 transition-colors duration-300">
             <div className="w-11/12 max-w-screen-2xl mx-auto">
                 
-                {/* Back Button / Breadcrumb (Optional) */}
+                {/* Back Button / Breadcrumb */}
                 <div className="mb-6">
-                    <Link to="/all-contests" className="text-gray-500 hover:text-[#FF642F] transition-colors flex items-center gap-2 font-medium">
+                    <Link to="/all-contests" className="text-gray-500 dark:text-gray-400 hover:text-[#FF642F] dark:hover:text-[#FF642F] transition-colors flex items-center gap-2 font-medium">
                         ← Back to all contests
                     </Link>
                 </div>
@@ -22,7 +23,7 @@ const ContestDetails = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
                     
                     {/* Left Side: Image Section */}
-                    <div className="relative rounded-3xl overflow-hidden shadow-2xl group h-full max-h-[600px]">
+                    <div className="relative rounded-3xl overflow-hidden shadow-2xl dark:shadow-gray-800 group h-full max-h-[600px]">
                         <img 
                             src={image} 
                             alt={contestName} 
@@ -47,54 +48,58 @@ const ContestDetails = () => {
 
                     {/* Right Side: Details Section */}
                     <div className="flex flex-col h-full">
-                        <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 leading-tight">
+                        <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] dark:text-white mb-6 leading-tight">
                             {contestName}
                         </h2>
                         
-                        <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                        <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-8">
                             {description}
                         </p>
 
-                        {/* Stats Grid - Custom Design */}
+                        {/* ✅ 2. Stats Grid - Custom Design for Dark Mode */}
                         <div className="grid grid-cols-2 gap-4 mb-8">
                             {/* Entry Fee */}
-                            <div className="bg-orange-50 p-5 rounded-2xl border border-orange-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                            <div className="bg-orange-50 dark:bg-gray-800 p-5 rounded-2xl border border-orange-100 dark:border-gray-700 flex flex-col items-center text-center hover:shadow-md transition-all">
                                 <FaDollarSign className="text-3xl text-[#FF642F] mb-2" />
-                                <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Entry Fee</span>
-                                <span className="text-2xl font-bold text-[#1A1A1A]">${price}</span>
+                                <span className="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider">Entry Fee</span>
+                                <span className="text-2xl font-bold text-[#1A1A1A] dark:text-gray-100">${price}</span>
                             </div>
 
                             {/* Prize Money */}
-                            <div className="bg-yellow-50 p-5 rounded-2xl border border-yellow-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                            <div className="bg-yellow-50 dark:bg-gray-800 p-5 rounded-2xl border border-yellow-100 dark:border-gray-700 flex flex-col items-center text-center hover:shadow-md transition-all">
                                 <FaTrophy className="text-3xl text-[#FFC107] mb-2" />
-                                <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Prize Money</span>
-                                <span className="text-2xl font-bold text-[#1A1A1A]">${prizeMoney}</span>
+                                <span className="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider">Prize Money</span>
+                                <span className="text-2xl font-bold text-[#1A1A1A] dark:text-gray-100">${prizeMoney}</span>
                             </div>
 
                             {/* Participants */}
-                            <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                            <div className="bg-blue-50 dark:bg-gray-800 p-5 rounded-2xl border border-blue-100 dark:border-gray-700 flex flex-col items-center text-center hover:shadow-md transition-all">
                                 <FaUsers className="text-3xl text-blue-500 mb-2" />
-                                <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Participants</span>
-                                <span className="text-2xl font-bold text-[#1A1A1A]">{participationCount || 0}</span>
+                                <span className="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider">Participants</span>
+                                <span className="text-2xl font-bold text-[#1A1A1A] dark:text-gray-100">{participationCount || 0}</span>
                             </div>
 
                             {/* Deadline */}
-                            <div className={`p-5 rounded-2xl border flex flex-col items-center text-center hover:shadow-md transition-shadow ${isDeadlineOver ? 'bg-red-50 border-red-100' : 'bg-purple-50 border-purple-100'}`}>
+                            <div className={`p-5 rounded-2xl border flex flex-col items-center text-center hover:shadow-md transition-all 
+                                ${isDeadlineOver 
+                                    ? 'bg-red-50 dark:bg-gray-800 border-red-100 dark:border-red-900/30' 
+                                    : 'bg-purple-50 dark:bg-gray-800 border-purple-100 dark:border-purple-900/30'
+                                }`}>
                                 <FaClock className={`text-3xl mb-2 ${isDeadlineOver ? 'text-red-500' : 'text-purple-500'}`} />
-                                <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Deadline</span>
+                                <span className="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider">Deadline</span>
                                 <span className={`text-lg font-bold ${isDeadlineOver ? 'text-red-500' : 'text-purple-500'}`}>
                                     {deadline}
                                 </span>
                             </div>
                         </div>
 
-                        {/* Task Instruction Box */}
+                        {/* ✅ 3. Task Instruction Box Dark Mode */}
                         <div className="mb-10">
-                            <h3 className="font-bold text-xl mb-4 flex items-center gap-2 text-[#1A1A1A]">
+                            <h3 className="font-bold text-xl mb-4 flex items-center gap-2 text-[#1A1A1A] dark:text-white">
                                 <FaFileAlt className="text-[#FF642F]" /> Task Instruction
                             </h3>
-                            <div className="bg-[#FFF8F5] p-6 rounded-2xl border border-orange-100 text-gray-700 italic relative">
-                                <span className="absolute top-2 left-4 text-6xl text-orange-200 font-serif opacity-50">“</span>
+                            <div className="bg-[#FFF8F5] dark:bg-gray-800 p-6 rounded-2xl border border-orange-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 italic relative transition-colors">
+                                <span className="absolute top-2 left-4 text-6xl text-orange-200 dark:text-gray-600 font-serif opacity-50">“</span>
                                 <p className="relative z-10 px-4">{taskInstruction}</p>
                             </div>
                         </div>
@@ -102,7 +107,7 @@ const ContestDetails = () => {
                         {/* Action Button */}
                         <div className="mt-auto">
                             {isDeadlineOver ? (
-                                <button disabled className="btn w-full rounded-full text-lg h-14 bg-gray-200 text-gray-400 border-none cursor-not-allowed font-bold">
+                                <button disabled className="btn w-full rounded-full text-lg h-14 bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 border-none cursor-not-allowed font-bold transition-colors">
                                     Registration Closed
                                 </button>
                             ) : (

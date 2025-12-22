@@ -12,19 +12,23 @@ const Payment = () => {
     const { contestName, price, image } = contest;
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center py-24 px-4 font-sans text-[#1A1A1A]">
+        // 1. Main Background and Text Color Updated
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center items-center py-24 px-4 font-sans text-[#1A1A1A] dark:text-gray-200 transition-colors duration-300">
             
             {/* Back Link */}
             <div className="w-full max-w-lg mb-6">
-                <Link to={`/contest/${contest._id}`} className="text-gray-500 hover:text-[#FF642F] flex items-center gap-2 transition-colors font-medium">
+                {/* 2. Link Color Updated */}
+                <Link to={`/contest/${contest._id}`} className="text-gray-500 dark:text-gray-400 hover:text-[#FF642F] flex items-center gap-2 transition-colors font-medium">
                     <FaArrowLeft /> Cancel & Go Back
                 </Link>
             </div>
 
             {/* Main Payment Card */}
-            <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+            {/* 3. Card Background and Border Updated */}
+            <div className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-700 transition-colors">
                 
                 {/* Header Section */}
+                {/* Header is already dark (bg-gray-900), so we keep it as is for contrast or update border if needed */}
                 <div className="bg-gray-900 text-white p-8 text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full bg-[#FF642F] opacity-10"></div>
                     <div className="relative z-10">
@@ -42,7 +46,8 @@ const Payment = () => {
                 <div className="p-8">
                     
                     {/* Summary Box */}
-                    <div className="flex gap-4 items-center bg-orange-50 p-4 rounded-xl border border-orange-100 mb-8">
+                    {/* 4. Summary Box Background and Text Updated */}
+                    <div className="flex gap-4 items-center bg-orange-50 dark:bg-gray-700/40 p-4 rounded-xl border border-orange-100 dark:border-gray-600 mb-8 transition-colors">
                         <img 
                             src={image} 
                             alt="Contest" 
@@ -50,11 +55,11 @@ const Payment = () => {
                             onError={(e) => { e.target.src = "https://i.ibb.co/xz9s2wN/placeholder.jpg" }}
                         />
                         <div className="flex-1">
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">You are paying for</p>
-                            <h3 className="font-bold text-[#1A1A1A] line-clamp-1">{contestName}</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">You are paying for</p>
+                            <h3 className="font-bold text-[#1A1A1A] dark:text-white line-clamp-1">{contestName}</h3>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Total</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Total</p>
                             <p className="text-xl font-bold text-[#FF642F]">${price}</p>
                         </div>
                     </div>
@@ -68,7 +73,7 @@ const Payment = () => {
             </div>
             
             {/* Footer Note */}
-            <p className="mt-6 text-gray-400 text-sm text-center">
+            <p className="mt-6 text-gray-400 dark:text-gray-500 text-sm text-center">
                 Need help? <Link to="/contact" className="text-[#FF642F] underline">Contact Support</Link>
             </p>
         </div>

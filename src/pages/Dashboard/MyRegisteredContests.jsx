@@ -19,8 +19,7 @@ const MyRegisteredContests = () => {
     if (isLoading) return <div className="flex justify-center mt-20"><span className="loading loading-spinner loading-lg text-orange-500"></span></div>;
 
     return (
-        <div className="w-full">
-            {/* স্ক্রলবারকে দৃশ্যমান করার জন্য কাস্টম স্টাইল */}
+        <div className="w-full ">
             <style>
                 {`
                     .scroll-container::-webkit-scrollbar { height: 8px; }
@@ -38,13 +37,10 @@ const MyRegisteredContests = () => {
                 </div>
             </div>
 
-            {/* টেবিল কন্টেইনার */}
-            <div className="bg-white rounded-xl shadow-md border border-gray-200">
+            <div className="bg-white  rounded-xl shadow-md border border-gray-200">
                 
-                {/* ✅ এই ডিভ-টিই স্ক্রলবার তৈরি করবে */}
                 <div className="w-full overflow-x-auto scroll-container">
                     
-                    {/* min-w-[800px] মানে টেবিলটি ৮০০ পিক্সেলের নিচে ছোট হবে না, ফলে স্ক্রল আসবে */}
                     <table className="table w-full min-w-[800px]">
                         <thead className="bg-gray-50 text-orange-600">
                             <tr>
@@ -107,7 +103,6 @@ const MyRegisteredContests = () => {
                     </table>
                 </div>
 
-                {/* মোবাইল ইউজারদের জন্য টিপস */}
                 <div className="lg:hidden text-center py-2 bg-orange-50 text-[10px] text-orange-400 font-bold uppercase tracking-widest">
                     ← Swipe left/right to see more info →
                 </div>

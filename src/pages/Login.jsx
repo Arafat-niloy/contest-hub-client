@@ -38,7 +38,6 @@ const Login = () => {
         googleSignIn()
             .then(result => {
                 const user = result.user;
-                // ডাটাবেজে পাঠানোর জন্য ইউজার ডাটা অবজেক্ট
                 const userInfo = {
                     email: user?.email,
                     name: user?.displayName,
@@ -46,7 +45,6 @@ const Login = () => {
                     role: 'user' 
                 };
 
-                // ডাটাবেজে ইউজার ইনফো পোস্ট করা (যাতে লিডারবোর্ডে শো করে)
                 axiosPublic.post('/users', userInfo)
                     .then(res => {
                         console.log('User saved to DB:', res.data);
@@ -61,10 +59,12 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-            <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+        // 1. Page Background Updated
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-300">
+            {/* 2. Card Background Updated */}
+            <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-transparent dark:border-gray-700">
                 
-                {/* Left Side */}
+                {/* Left Side (Kept consistent but ensured it looks good) */}
                 <div className="hidden md:flex w-1/2 bg-[#FF642F] text-white flex-col justify-center items-center p-10 relative">
                     <div className="absolute inset-0 bg-black opacity-10"></div>
                     <div className="relative z-10 text-center">
@@ -77,29 +77,42 @@ const Login = () => {
                 {/* Right Side */}
                 <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-800">Login to ContestHub</h2>
-                        <p className="text-gray-500 mt-2">Enter your details below</p>
+                        {/* 3. Heading Texts Updated */}
+                        <h2 className="text-3xl font-bold text-gray-800 dark:text-white">Login to ContestHub</h2>
+                        <p className="text-gray-500 dark:text-gray-400 mt-2">Enter your details below</p>
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                         <div className="form-control">
-                            <label className="label font-semibold text-gray-700">Email Address</label>
+                            {/* 4. Labels Updated */}
+                            <label className="label font-semibold text-gray-700 dark:text-gray-300">Email Address</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaEnvelope />
                                 </div>
-                                <input type="email" {...register("email", { required: true })} placeholder="Enter your email" className="input input-bordered w-full pl-4 focus:outline-none focus:border-[#FF642F]" />
+                                {/* 5. Input Fields Updated (Dark bg, light text, border adjusted) */}
+                                <input 
+                                    type="email" 
+                                    {...register("email", { required: true })} 
+                                    placeholder="Enter your email" 
+                                    className="input input-bordered w-full pl-10 focus:outline-none focus:border-[#FF642F] bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-400" 
+                                />
                             </div>
                         </div>
 
                         <div className="form-control">
-                            <label className="label font-semibold text-gray-700">Password</label>
+                            <label className="label font-semibold text-gray-700 dark:text-gray-300">Password</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaLock />
                                 </div>
-                                <input type={showPassword ? "text" : "password"} {...register("password", { required: true })} placeholder="Enter your password" className="input input-bordered w-full pl-4 pr-10 focus:outline-none focus:border-[#FF642F]" />
-                                <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-400" onClick={() => setShowPassword(!showPassword)}>
+                                <input 
+                                    type={showPassword ? "text" : "password"} 
+                                    {...register("password", { required: true })} 
+                                    placeholder="Enter your password" 
+                                    className="input input-bordered w-full pl-10 pr-10 focus:outline-none focus:border-[#FF642F] bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-400" 
+                                />
+                                <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" onClick={() => setShowPassword(!showPassword)}>
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </div>
                             </div>
@@ -110,14 +123,16 @@ const Login = () => {
                         </button>
                     </form>
 
-                    <div className="divider text-gray-400 my-6">OR LOGIN WITH</div>
+                    {/* 6. Divider Color Updated */}
+                    <div className="divider text-gray-400 dark:text-gray-500 my-6">OR LOGIN WITH</div>
 
-                    <button onClick={handleGoogleSignIn} className="btn btn-outline border-gray-300 text-gray-700 hover:bg-gray-50 w-full flex items-center gap-2">
+                    {/* 7. Google Button Updated (Border, Text, Hover) */}
+                    <button onClick={handleGoogleSignIn} className="btn btn-outline border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white w-full flex items-center gap-2">
                         <FcGoogle className="text-xl" />
                         <span>Continue with Google</span>
                     </button>
 
-                    <p className="mt-8 text-center text-gray-600">
+                    <p className="mt-8 text-center text-gray-600 dark:text-gray-400">
                         Don't have an account? <Link to="/signup" className="text-[#FF642F] font-bold hover:underline ml-1">Create an account</Link>
                     </p>
                 </div>

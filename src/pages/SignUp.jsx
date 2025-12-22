@@ -22,10 +22,8 @@ const SignUp = () => {
         setLoading(true);
         createUser(data.email, data.password)
             .then(result => {
-                // ১. প্রোফাইল আপডেট (Name এবং PhotoURL)
                 updateUserProfile(data.name, data.photoURL)
                     .then(() => {
-                        // ২. ডাটাবেজে সেভ করার জন্য অবজেক্ট তৈরি
                         const userInfo = {
                             name: data.name,
                             email: data.email,
@@ -33,10 +31,8 @@ const SignUp = () => {
                             role: 'user'
                         };
                         
-                        // ৩. MongoDB তে ইউজার পাঠানো
                         axiosPublic.post('/users', userInfo)
                             .then(res => {
-                                // insertedId থাকলে বা সাকসেস হলে রিডাইরেক্ট
                                 if (res.data.insertedId || res.data.message === 'user already exists') {
                                     reset();
                                     toast.success('Account Created Successfully!');
@@ -67,7 +63,6 @@ const SignUp = () => {
                     role: 'user'
                 };
                 
-                // গুগল লগইনের পর ডাটাবেজে পাঠানো (লিডারবোর্ডের জন্য এটি জরুরি)
                 axiosPublic.post('/users', userInfo)
                     .then(res => {
                         console.log('User saved to DB:', res.data);
@@ -82,30 +77,35 @@ const SignUp = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-            <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+        // 1. Global Background Updated
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-300">
+            {/* 2. Card Background & Border Updated */}
+            <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-transparent dark:border-gray-700">
                 
                 {/* Left Side - Form Section */}
                 <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center order-2 md:order-1">
                     <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
-                        <p className="text-gray-500 mt-2">Join ContestHub to start your journey!</p>
+                        {/* 3. Headers Updated */}
+                        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Create Account</h1>
+                        <p className="text-gray-500 dark:text-gray-400 mt-2">Join ContestHub to start your journey!</p>
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         
                         {/* Name Input */}
                         <div className="form-control">
-                            <label className="label font-semibold text-gray-700">Full Name</label>
+                            {/* 4. Labels Updated */}
+                            <label className="label font-semibold text-gray-700 dark:text-gray-300">Full Name</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaUser />
                                 </div>
+                                {/* 5. Inputs Updated (Dark bg, Light Text, Dark Border) */}
                                 <input 
                                     type="text" 
                                     {...register("name", { required: true })} 
                                     placeholder="John Doe" 
-                                    className="input input-bordered w-full pl-4 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F]" 
+                                    className="input input-bordered w-full pl-10 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-400" 
                                 />
                             </div>
                             {errors.name && <span className="text-red-500 text-xs mt-1">Name is required</span>}
@@ -113,7 +113,7 @@ const SignUp = () => {
 
                         {/* Photo URL Input */}
                         <div className="form-control">
-                            <label className="label font-semibold text-gray-700">Photo URL</label>
+                            <label className="label font-semibold text-gray-700 dark:text-gray-300">Photo URL</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaImage />
@@ -122,7 +122,7 @@ const SignUp = () => {
                                     type="text" 
                                     {...register("photoURL", { required: true })} 
                                     placeholder="https://example.com/photo.jpg" 
-                                    className="input input-bordered w-full pl-4 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F]" 
+                                    className="input input-bordered w-full pl-10 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-400" 
                                 />
                             </div>
                             {errors.photoURL && <span className="text-red-500 text-xs mt-1">Photo URL is required</span>}
@@ -130,7 +130,7 @@ const SignUp = () => {
 
                         {/* Email Input */}
                         <div className="form-control">
-                            <label className="label font-semibold text-gray-700">Email Address</label>
+                            <label className="label font-semibold text-gray-700 dark:text-gray-300">Email Address</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaEnvelope />
@@ -139,7 +139,7 @@ const SignUp = () => {
                                     type="email" 
                                     {...register("email", { required: true })} 
                                     placeholder="name@example.com" 
-                                    className="input input-bordered w-full pl-4 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F]" 
+                                    className="input input-bordered w-full pl-10 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-400" 
                                 />
                             </div>
                             {errors.email && <span className="text-red-500 text-xs mt-1">Email is required</span>}
@@ -147,7 +147,7 @@ const SignUp = () => {
 
                         {/* Password Input */}
                         <div className="form-control">
-                            <label className="label font-semibold text-gray-700">Password</label>
+                            <label className="label font-semibold text-gray-700 dark:text-gray-300">Password</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaLock />
@@ -160,7 +160,7 @@ const SignUp = () => {
                                         pattern: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/
                                     })} 
                                     placeholder="Create a strong password" 
-                                    className="input input-bordered w-full pl-4 pr-10 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F]" 
+                                    className="input input-bordered w-full pl-10 pr-10 focus:outline-none focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-400" 
                                 />
                                 <div 
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-400 hover:text-[#FF642F]"
@@ -183,18 +183,19 @@ const SignUp = () => {
                         </div>
                     </form>
 
-                    <div className="divider text-gray-400 my-6">OR JOIN WITH</div>
+                    {/* 6. Divider Updated */}
+                    <div className="divider text-gray-400 dark:text-gray-500 my-6">OR JOIN WITH</div>
 
-                    {/* Google Sign Up */}
+                    {/* 7. Google Button Updated */}
                     <button 
                         onClick={handleGoogleSignIn} 
-                        className="btn btn-outline border-gray-300 text-gray-700 hover:bg-gray-50 w-full flex items-center gap-2"
+                        className="btn btn-outline border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white w-full flex items-center gap-2"
                     >
                         <FcGoogle className="text-xl" />
                         <span>Continue with Google</span>
                     </button>
 
-                    <p className="mt-6 text-center text-gray-600">
+                    <p className="mt-6 text-center text-gray-600 dark:text-gray-400">
                         Already have an account? 
                         <Link to="/login" className="text-[#FF642F] font-bold hover:underline ml-1">
                             Login here
@@ -202,7 +203,7 @@ const SignUp = () => {
                     </p>
                 </div>
 
-                {/* Right Side - Illustration */}
+                {/* Right Side - Illustration (Stays Orange/White as it's a brand panel) */}
                 <div className="hidden md:flex w-1/2 bg-[#FF642F] flex-col justify-center items-center p-10 relative order-1 md:order-2 text-white">
                     <div className="absolute inset-0 bg-black opacity-10"></div>
                     <div className="relative z-10 text-center">

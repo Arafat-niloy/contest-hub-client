@@ -59,7 +59,9 @@ const EditContest = () => {
                 text: "Contest information has been updated.",
                 icon: "success",
                 confirmButtonColor: "#FF642F",
-                background: "#fff",
+                // Swal doesn't support Tailwind dark: classes directly in background property easily without logic, 
+                // keeping it white/standard for safety or you can use customClass
+                background: "#fff", 
                 customClass: {
                     title: 'text-gray-800',
                     popup: 'rounded-xl'
@@ -70,13 +72,14 @@ const EditContest = () => {
     };
 
     if (loading) return (
-        <div className="flex justify-center items-center h-screen bg-gray-50">
+        <div className="flex justify-center items-center h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
             <div className="loading loading-spinner loading-lg text-[#FF642F]"></div>
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-gray-50/50 py-10 px-4 sm:px-6 lg:px-8">
+        // ✅ 1. Main Background Dark Mode
+        <div className="min-h-screen bg-gray-50/50 dark:bg-gray-900 py-10 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
             <div className="max-w-5xl mx-auto">
                 
                 {/* Header Section */}
@@ -84,41 +87,47 @@ const EditContest = () => {
                     <div>
                         <button 
                             onClick={() => navigate(-1)} 
-                            className="flex items-center text-gray-500 hover:text-[#FF642F] transition-colors mb-2 text-sm font-medium"
+                            className="flex items-center text-gray-500 dark:text-gray-400 hover:text-[#FF642F] dark:hover:text-[#FF642F] transition-colors mb-2 text-sm font-medium"
                         >
                             <FaArrowLeft className="mr-2" /> Back to List
                         </button>
-                        <h2 className="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
+                        <h2 className="text-3xl font-extrabold text-gray-800 dark:text-white flex items-center gap-3">
                             <span className="bg-[#FF642F] text-white p-2 rounded-lg text-xl">
                                 <FaEdit />
                             </span>
                             Edit Contest Details
                         </h2>
-                        <p className="text-gray-500 mt-1 ml-11">Update the contest information accurately.</p>
+                        <p className="text-gray-500 dark:text-gray-400 mt-1 ml-11">Update the contest information accurately.</p>
                     </div>
                 </div>
 
-                {/* Form Section */}
-                <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                {/* ✅ 2. Form Card Dark Mode */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-gray-900/50 border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
                     <div className="p-8">
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                             
                             {/* Section 1: Basic Info */}
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">Basic Information</h3>
+                                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 border-b dark:border-gray-700 pb-2 mb-4">Basic Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     
                                     {/* Contest Name */}
                                     <div className="form-control md:col-span-2">
-                                        <label className="label text-gray-600 font-medium text-sm">Contest Name</label>
+                                        <label className="label text-gray-600 dark:text-gray-300 font-medium text-sm">Contest Name</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <FaHeading className="text-gray-400" />
+                                                <FaHeading className="text-gray-400 dark:text-gray-500" />
                                             </div>
                                             <input 
                                                 type="text" 
                                                 {...register("contestName", { required: true })} 
-                                                className="input input-bordered w-full p-2 focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 focus:bg-white transition-all rounded-lg"
+                                                className="input input-bordered w-full p-2 pl-10 
+                                                focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] 
+                                                bg-gray-50 dark:bg-gray-700 
+                                                text-gray-900 dark:text-white
+                                                border-gray-300 dark:border-gray-600
+                                                focus:bg-white dark:focus:bg-gray-600 
+                                                transition-all rounded-lg"
                                                 placeholder="e.g. Logo Design Championship"
                                             />
                                         </div>
@@ -127,15 +136,21 @@ const EditContest = () => {
 
                                     {/* Image URL */}
                                     <div className="form-control">
-                                        <label className="label text-gray-600 font-medium text-sm">Banner Image URL</label>
+                                        <label className="label text-gray-600 dark:text-gray-300 font-medium text-sm">Banner Image URL</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <FaImage className="text-gray-400" />
+                                                <FaImage className="text-gray-400 dark:text-gray-500" />
                                             </div>
                                             <input 
                                                 type="url" 
                                                 {...register("image", { required: true })} 
-                                                className="input input-bordered w-full p-2 focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 focus:bg-white transition-all rounded-lg"
+                                                className="input input-bordered w-full p-2 pl-10
+                                                focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] 
+                                                bg-gray-50 dark:bg-gray-700 
+                                                text-gray-900 dark:text-white
+                                                border-gray-300 dark:border-gray-600
+                                                focus:bg-white dark:focus:bg-gray-600 
+                                                transition-all rounded-lg"
                                                 placeholder="https://..."
                                             />
                                         </div>
@@ -143,15 +158,21 @@ const EditContest = () => {
 
                                     {/* Contest Type */}
                                     <div className="form-control">
-                                        <label className="label text-gray-600 font-medium text-sm">Category</label>
+                                        <label className="label text-gray-600 dark:text-gray-300 font-medium text-sm">Category</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <FaListAlt className="text-gray-400" />
+                                                <FaListAlt className="text-gray-400 dark:text-gray-500" />
                                             </div>
                                             <select 
                                                 defaultValue="" 
                                                 {...register("contestType", { required: true })} 
-                                                className="select select-bordered w-full p-2 focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 focus:bg-white transition-all rounded-lg"
+                                                className="select select-bordered w-full p-2 pl-10
+                                                focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] 
+                                                bg-gray-50 dark:bg-gray-700 
+                                                text-gray-900 dark:text-white
+                                                border-gray-300 dark:border-gray-600
+                                                focus:bg-white dark:focus:bg-gray-600 
+                                                transition-all rounded-lg"
                                             >
                                                 <option disabled value="">Select Category</option>
                                                 {contestTypes.map(type => <option key={type} value={type}>{type}</option>)}
@@ -163,20 +184,26 @@ const EditContest = () => {
 
                             {/* Section 2: Financials & Dates */}
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">Financials & Deadline</h3>
+                                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 border-b dark:border-gray-700 pb-2 mb-4">Financials & Deadline</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     {/* Price */}
                                     <div className="form-control">
-                                        <label className="label text-gray-600 font-medium text-sm">Entry Fee</label>
+                                        <label className="label text-gray-600 dark:text-gray-300 font-medium text-sm">Entry Fee</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <FaDollarSign className="text-gray-400" />
+                                                <FaDollarSign className="text-gray-400 dark:text-gray-500" />
                                             </div>
                                             <input 
                                                 type="number" 
                                                 step="0.01"
                                                 {...register("price", { required: true })} 
-                                                className="input input-bordered w-full p-2 focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 focus:bg-white transition-all rounded-lg"
+                                                className="input input-bordered w-full p-2 pl-10
+                                                focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] 
+                                                bg-gray-50 dark:bg-gray-700 
+                                                text-gray-900 dark:text-white
+                                                border-gray-300 dark:border-gray-600
+                                                focus:bg-white dark:focus:bg-gray-600 
+                                                transition-all rounded-lg"
                                                 placeholder="0.00"
                                             />
                                         </div>
@@ -184,16 +211,22 @@ const EditContest = () => {
 
                                     {/* Prize Money */}
                                     <div className="form-control">
-                                        <label className="label text-gray-600 font-medium text-sm">Winning Prize</label>
+                                        <label className="label text-gray-600 dark:text-gray-300 font-medium text-sm">Winning Prize</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <FaTrophy className="text-[#FFC107]" /> {/* Gold color for trophy */}
+                                                <FaTrophy className="text-[#FFC107]" /> {/* Gold color remains same */}
                                             </div>
                                             <input 
                                                 type="number" 
                                                 step="0.01"
                                                 {...register("prizeMoney", { required: true })} 
-                                                className="input input-bordered w-full p-2 focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 focus:bg-white transition-all rounded-lg"
+                                                className="input input-bordered w-full p-2 pl-10
+                                                focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] 
+                                                bg-gray-50 dark:bg-gray-700 
+                                                text-gray-900 dark:text-white
+                                                border-gray-300 dark:border-gray-600
+                                                focus:bg-white dark:focus:bg-gray-600 
+                                                transition-all rounded-lg"
                                                 placeholder="0.00"
                                             />
                                         </div>
@@ -201,16 +234,22 @@ const EditContest = () => {
 
                                     {/* Deadline */}
                                     <div className="form-control">
-                                        <label className="label text-gray-600 font-medium text-sm">Submission Deadline</label>
+                                        <label className="label text-gray-600 dark:text-gray-300 font-medium text-sm">Submission Deadline</label>
                                         <div className="relative flex items-center">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                                                <FaCalendarAlt className="text-gray-400" />
+                                                <FaCalendarAlt className="text-gray-400 dark:text-gray-500" />
                                             </div>
                                             <div className="w-full">
                                                 <DatePicker 
                                                     selected={startDate} 
                                                     onChange={(date) => setStartDate(date)} 
-                                                    className="input input-bordered w-full pl-8 focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 focus:bg-white transition-all rounded-lg"
+                                                    className="input input-bordered w-full pl-10
+                                                    focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] 
+                                                    bg-gray-50 dark:bg-gray-700 
+                                                    text-gray-900 dark:text-white
+                                                    border-gray-300 dark:border-gray-600
+                                                    focus:bg-white dark:focus:bg-gray-600 
+                                                    transition-all rounded-lg"
                                                     dateFormat="dd/MM/yyyy"
                                                 />
                                             </div>
@@ -221,28 +260,40 @@ const EditContest = () => {
 
                             {/* Section 3: Details */}
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">Detailed Description</h3>
+                                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 border-b dark:border-gray-700 pb-2 mb-4">Detailed Description</h3>
                                 <div className="space-y-6">
                                     {/* Description */}
                                     <div className="form-control">
-                                        <label className="label text-gray-600 font-medium text-sm flex items-center gap-2">
-                                            <FaAlignLeft className="text-gray-400" /> Description
+                                        <label className="label text-gray-600 dark:text-gray-300 font-medium text-sm flex items-center gap-2">
+                                            <FaAlignLeft className="text-gray-400 dark:text-gray-500" /> Description
                                         </label>
                                         <textarea 
                                             {...register("description", { required: true })} 
-                                            className="textarea textarea-bordered h-32 focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 focus:bg-white transition-all rounded-lg p-2 text-base"
+                                            className="textarea textarea-bordered h-32 
+                                            focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] 
+                                            bg-gray-50 dark:bg-gray-700 
+                                            text-gray-900 dark:text-white
+                                            border-gray-300 dark:border-gray-600
+                                            focus:bg-white dark:focus:bg-gray-600 
+                                            transition-all rounded-lg p-2 text-base"
                                             placeholder="Describe your contest in detail..."
                                         ></textarea>
                                     </div>
 
                                     {/* Task Instruction */}
                                     <div className="form-control">
-                                        <label className="label text-gray-600 font-medium text-sm flex items-center gap-2">
-                                            <FaListAlt className="text-gray-400" /> Submission Instructions
+                                        <label className="label text-gray-600 dark:text-gray-300 font-medium text-sm flex items-center gap-2">
+                                            <FaListAlt className="text-gray-400 dark:text-gray-500" /> Submission Instructions
                                         </label>
                                         <textarea 
                                             {...register("taskInstruction", { required: true })} 
-                                            className="textarea textarea-bordered h-32 focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] bg-gray-50 focus:bg-white transition-all rounded-lg p-2 text-base" 
+                                            className="textarea textarea-bordered h-32 
+                                            focus:border-[#FF642F] focus:ring-1 focus:ring-[#FF642F] 
+                                            bg-gray-50 dark:bg-gray-700 
+                                            text-gray-900 dark:text-white
+                                            border-gray-300 dark:border-gray-600
+                                            focus:bg-white dark:focus:bg-gray-600 
+                                            transition-all rounded-lg p-2 text-base" 
                                             placeholder="Step-by-step guide for submission..."
                                         ></textarea>
                                     </div>
@@ -250,11 +301,11 @@ const EditContest = () => {
                             </div>
 
                             {/* Actions */}
-                            <div className="flex justify-end pt-4 border-t border-gray-100">
+                            <div className="flex justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
                                 <button 
                                     type="button" 
                                     onClick={() => navigate(-1)}
-                                    className="btn btn-ghost mr-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                                    className="btn btn-ghost mr-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
                                     Cancel
                                 </button>

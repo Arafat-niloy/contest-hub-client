@@ -31,7 +31,7 @@ const Profile = () => {
   const [photo, setPhoto] = useState("");
   const [bio, setBio] = useState("");
 
-  // Stats States (instruction-based)
+  // Stats States
   const [stats, setStats] = useState({
     totalWins: 0,
     totalParticipated: 0,
@@ -42,7 +42,6 @@ const Profile = () => {
       if (!user?.email) return;
 
       try {
-        // ✅ SINGLE SOURCE OF TRUTH (Instruction follow)
         const statsRes = await axiosSecure.get(
           `/my-winning-stats/${user.email}`
         );
@@ -52,7 +51,6 @@ const Profile = () => {
           totalParticipated: statsRes.data.totalParticipated || 0,
         });
 
-        // User basic info
         setName(user.displayName || "");
         setPhoto(user.photoURL || "");
         setBio(user.bio || "Contest Enthusiast!");
@@ -78,10 +76,7 @@ const Profile = () => {
 
     try {
       await updateUserProfile(name, photo);
-      const res = await axiosSecure.put(
-        `/users/${user.email}`,
-        updateInfo
-      );
+      const res = await axiosSecure.put(`/users/${user.email}`, updateInfo);
 
       if (res.data.modifiedCount > 0 || res.data.matchedCount > 0) {
         Swal.fire({
@@ -103,7 +98,7 @@ const Profile = () => {
     }
   };
 
-  // ✅ Chart Data (Won / Participated)
+  // Chart Data
   const chartData = [
     { name: "Won", value: stats.totalWins },
     {
@@ -112,22 +107,24 @@ const Profile = () => {
     },
   ];
 
-  const COLORS = ["#FF642F", "#E5f"];
+  const COLORS = ["#FF642F", "#8884d8"];
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[80vh]">
+      <div className="flex justify-center items-center h-[80vh] bg-gray-50 dark:bg-gray-900">
         <span className="loading loading-spinner loading-lg text-[#FF642F]"></span>
       </div>
     );
   }
 
   return (
-    <div className="w-full p-4 md:p-10 bg-gray-50 min-h-screen">
+    <div className="w-full p-4 md:p-10 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
       <div className="max-w-6xl mx-auto space-y-8">
+        
         {/* Header Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Profile Card */}
+          
+          {/* Profile Card (Gradient remains same, text is white) */}
           <div className="md:col-span-2 bg-gradient-to-r from-[#FF642F] to-[#F97316] rounded-3xl p-8 text-white flex flex-col md:flex-row items-center gap-8 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"></div>
 
@@ -138,9 +135,7 @@ const Profile = () => {
             </div>
 
             <div className="text-center md:text-left z-10">
-              <h1 className="text-3xl font-bold">
-                {user?.displayName}
-              </h1>
+              <h1 className="text-3xl font-bold">{user?.displayName}</h1>
               <p className="opacity-80 flex items-center justify-center md:justify-start gap-2 mt-1">
                 <FaEnvelope className="text-sm" /> {user?.email}
               </p>
@@ -154,9 +149,9 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Win Ratio Chart Card */}
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 flex flex-col items-center justify-center ">
-            <h3 className="text-gray-700 font-bold flex items-center gap-2 mb-2">
+          {/* Win Ratio Chart Card - Dark Mode Added */}
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center transition-colors">
+            <h3 className="text-gray-700 dark:text-gray-200 font-bold flex items-center gap-2 mb-2">
               <FaChartPie className="text-[#FF642F]" />
               Winning Ratio
             </h3>
@@ -175,28 +170,35 @@ const Profile = () => {
                       <Cell
                         key={index}
                         fill={COLORS[index % COLORS.length]}
+                        stroke="none"
                       />
                     ))}
                   </Pie>
-                  <Tooltip />
-                  <Legend verticalAlign="bottom" height={36} />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} 
+                  />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    height={36} 
+                    formatter={(value) => <span className="text-gray-600 dark:text-gray-300">{value}</span>}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
               Based on {stats.totalParticipated} participations
             </p>
           </div>
         </div>
 
-        {/* Edit Form Section */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-gray-100">
-          <div className="mb-10 border-b pb-4">
-            <h2 className="text-2xl font-bold text-gray-800">
+        {/* Edit Form Section - Dark Mode Added */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 md:p-12 border border-gray-100 dark:border-gray-700 transition-colors">
+          <div className="mb-10 border-b dark:border-gray-700 pb-4">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
               Account Settings
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               Update your profile information and bio.
             </p>
           </div>
@@ -207,16 +209,17 @@ const Profile = () => {
           >
             {/* Full Name */}
             <div className="form-control">
-              <label className="label font-semibold text-gray-700">
+              <label className="label font-semibold text-gray-700 dark:text-gray-300">
                 Full Name
               </label>
               <div className="relative">
-                <FaUser className="absolute left-3 top-4 text-gray-400" />
+                <FaUser className="absolute left-3 top-4 text-gray-400 dark:text-gray-500" />
+                {/* pl-10 added for icon spacing, dark mode colors added */}
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="input input-bordered pl-2 w-full border"
+                  className="input input-bordered pl-4 w-full border dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:border-[#FF642F]"
                   required
                 />
               </div>
@@ -224,29 +227,29 @@ const Profile = () => {
 
             {/* Photo URL */}
             <div className="form-control">
-              <label className="label font-semibold text-gray-700">
+              <label className="label font-semibold text-gray-700 dark:text-gray-300">
                 Profile Photo URL
               </label>
               <div className="relative">
-                <FaCamera className="absolute left-3 top-4 text-gray-400" />
+                <FaCamera className="absolute left-3 top-4 text-gray-400 dark:text-gray-500" />
                 <input
                   type="text"
                   value={photo}
                   onChange={(e) => setPhoto(e.target.value)}
-                  className="input input-bordered border w-full pl-2"
+                  className="input input-bordered pl-4 w-full border dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:border-[#FF642F]"
                 />
               </div>
             </div>
 
             {/* Bio */}
             <div className="form-control md:col-span-2 space-x-2">
-              <label className="label font-semibold text-gray-700">
+              <label className="label font-semibold text-gray-700 dark:text-gray-300">
                 Bio
               </label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="textarea textarea-bordered h-24 border p-2"
+                className="textarea textarea-bordered h-24 border p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:border-[#FF642F]"
                 placeholder="Tell us about your skills or goals..."
               ></textarea>
             </div>
@@ -255,7 +258,7 @@ const Profile = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn bg-[#FF642F] hover:bg-[#e55a2a] text-white px-10 border-none shadow-lg"
+                className="btn bg-[#FF642F] hover:bg-[#e55a2a] text-white px-10 border-none shadow-lg w-full md:w-auto"
               >
                 {submitting ? (
                   <span className="loading loading-spinner"></span>
