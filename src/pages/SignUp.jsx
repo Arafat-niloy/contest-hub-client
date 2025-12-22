@@ -77,15 +77,15 @@ const SignUp = () => {
     };
 
     return (
-        // 1. Global Background Updated
+        // 1. Global Background 
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-300">
-            {/* 2. Card Background & Border Updated */}
+            {/* 2. Card Background & Border  */}
             <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-transparent dark:border-gray-700">
                 
                 {/* Left Side - Form Section */}
                 <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center order-2 md:order-1">
                     <div className="mb-6">
-                        {/* 3. Headers Updated */}
+                        {/* 3. Headers  */}
                         <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Create Account</h1>
                         <p className="text-gray-500 dark:text-gray-400 mt-2">Join ContestHub to start your journey!</p>
                     </div>
@@ -94,13 +94,13 @@ const SignUp = () => {
                         
                         {/* Name Input */}
                         <div className="form-control">
-                            {/* 4. Labels Updated */}
+                            {/* 4. Labels  */}
                             <label className="label font-semibold text-gray-700 dark:text-gray-300">Full Name</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaUser />
                                 </div>
-                                {/* 5. Inputs Updated (Dark bg, Light Text, Dark Border) */}
+                                {/* 5. Inputs  (Dark bg, Light Text, Dark Border) */}
                                 <input 
                                     type="text" 
                                     {...register("name", { required: true })} 
@@ -183,10 +183,10 @@ const SignUp = () => {
                         </div>
                     </form>
 
-                    {/* 6. Divider Updated */}
+                    {/* 6. Divider  */}
                     <div className="divider text-gray-400 dark:text-gray-500 my-6">OR JOIN WITH</div>
 
-                    {/* 7. Google Button Updated */}
+                    {/* 7. Google Button  */}
                     <button 
                         onClick={handleGoogleSignIn} 
                         className="btn btn-outline border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white w-full flex items-center gap-2"
@@ -203,7 +203,7 @@ const SignUp = () => {
                     </p>
                 </div>
 
-                {/* Right Side - Illustration (Stays Orange/White as it's a brand panel) */}
+                {/* Right Side  */}
                 <div className="hidden md:flex w-1/2 bg-[#FF642F] flex-col justify-center items-center p-10 relative order-1 md:order-2 text-white">
                     <div className="absolute inset-0 bg-black opacity-10"></div>
                     <div className="relative z-10 text-center">

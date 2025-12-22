@@ -59,8 +59,6 @@ const EditContest = () => {
                 text: "Contest information has been updated.",
                 icon: "success",
                 confirmButtonColor: "#FF642F",
-                // Swal doesn't support Tailwind dark: classes directly in background property easily without logic, 
-                // keeping it white/standard for safety or you can use customClass
                 background: "#fff", 
                 customClass: {
                     title: 'text-gray-800',

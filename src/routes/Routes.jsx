@@ -26,7 +26,7 @@ import MyWinning from "../pages/Dashboard/MyWinning";
 import AddContest from "../pages/Dashboard/AddContest";
 import MyCreatedContest from "../pages/Dashboard/MyCreatedContest/MyCreatedContest";
 import ContestSubmitted from "../pages/Dashboard/MyCreatedContest/ContestSubmitted"; 
-import EditContest from "../pages/Dashboard/Creator/EditContest"; // ✅ (New Import) ফাইল লোকেশন চেক করে নিন
+import EditContest from "../pages/Dashboard/Creator/EditContest"; 
 
 // Dashboard - Admin Pages
 import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
@@ -92,7 +92,7 @@ export const router = createBrowserRouter([
       },
 
       // =================================================
-      // USER ROUTES (ব্যাবহারকারী)
+      // USER ROUTES 
       // =================================================
       {
         path: "my-participated",
@@ -103,13 +103,12 @@ export const router = createBrowserRouter([
         element: <MyWinning></MyWinning>,
       },
       {
-        // এই রাউটটি MyRegisteredContests থেকে আসা লিংকের সাথে মিল রাখা হয়েছে
         path: "payment/submit/:id", 
         element: <SubmitTask></SubmitTask>,
       },
 
       // =================================================
-      // CREATOR ROUTES (কন্টেস্ট ক্রিয়েটর)
+      // CREATOR ROUTES 
       // =================================================
       {
         path: "add-contest",
@@ -124,13 +123,12 @@ export const router = createBrowserRouter([
         element: <ContestSubmitted></ContestSubmitted>,
       },
       {
-        // ✅ NEW EDIT ROUTE ADDED HERE
         path: "contest/edit/:id",
         element: <EditContest></EditContest>
       },
 
       // =================================================
-      // ADMIN ROUTES (অ্যাডমিন)
+      // ADMIN ROUTES 
       // =================================================
       {
         path: "manage-users",

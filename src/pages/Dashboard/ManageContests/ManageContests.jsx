@@ -6,7 +6,6 @@ import { FaTrash, FaCheck, FaListAlt, FaTimes } from "react-icons/fa";
 const ManageContests = () => {
     const axiosSecure = useAxiosSecure();
 
-    // সব কন্টেস্ট (Pending + Accepted + Rejected) লোড করা হচ্ছে
     const { data: contests = [], refetch, isLoading } = useQuery({
         queryKey: ['admin-contests'],
         queryFn: async () => {
@@ -15,7 +14,6 @@ const ManageContests = () => {
         }
     });
 
-    // ১. কন্টেস্ট Approve (Confirm) করার ফাংশন
     const handleApprove = (contest) => {
         axiosSecure.patch(`/contests/status/${contest._id}`, { status: 'accepted' })
             .then(res => {
@@ -27,14 +25,13 @@ const ManageContests = () => {
                         title: "Contest Approved Successfully!",
                         showConfirmButton: false,
                         timer: 1500,
-                        background: "#1f2937", // Dark mode background for alert
-                        color: "#fff" // White text for alert
+                        background: "#1f2937", 
+                        color: "#fff" 
                     });
                 }
             })
     };
 
-    // ২. কন্টেস্ট Reject করার ফাংশন
     const handleReject = (contest) => {
         axiosSecure.patch(`/contests/status/${contest._id}`, { status: 'rejected' })
             .then(res => {
@@ -53,7 +50,6 @@ const ManageContests = () => {
             })
     };
 
-    // ৩. কন্টেস্ট Delete করার ফাংশন
     const handleDelete = (contest) => {
         Swal.fire({
             title: "Are you sure?",

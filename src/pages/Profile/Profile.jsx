@@ -124,7 +124,6 @@ const Profile = () => {
         {/* Header Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Profile Card (Gradient remains same, text is white) */}
           <div className="md:col-span-2 bg-gradient-to-r from-[#FF642F] to-[#F97316] rounded-3xl p-8 text-white flex flex-col md:flex-row items-center gap-8 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"></div>
 
@@ -149,7 +148,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Win Ratio Chart Card - Dark Mode Added */}
           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center transition-colors">
             <h3 className="text-gray-700 dark:text-gray-200 font-bold flex items-center gap-2 mb-2">
               <FaChartPie className="text-[#FF642F]" />
@@ -192,7 +190,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Edit Form Section - Dark Mode Added */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 md:p-12 border border-gray-100 dark:border-gray-700 transition-colors">
           <div className="mb-10 border-b dark:border-gray-700 pb-4">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -214,7 +211,6 @@ const Profile = () => {
               </label>
               <div className="relative">
                 <FaUser className="absolute left-3 top-4 text-gray-400 dark:text-gray-500" />
-                {/* pl-10 added for icon spacing, dark mode colors added */}
                 <input
                   type="text"
                   value={name}

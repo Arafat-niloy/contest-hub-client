@@ -8,7 +8,6 @@ const ContestSubmitted = () => {
     const { id } = useParams(); // Contest ID
     const axiosSecure = useAxiosSecure();
 
-    // TanStack Query দিয়ে ডাটা ফেচ করা হচ্ছে
     const { data: submissions = [], refetch, isLoading } = useQuery({
         queryKey: ['submissions', id],
         queryFn: async () => {
@@ -95,7 +94,7 @@ const ContestSubmitted = () => {
                             ? 'border-orange-200 dark:border-orange-500/50 shadow-orange-100 dark:shadow-orange-900/20 shadow-xl' 
                             : 'border-gray-100 dark:border-gray-700 shadow-md hover:shadow-xl dark:shadow-black/20'}`}
                     >
-                        {/* Winner Badge (Absolute Position) */}
+                        {/* Winner Badge  */}
                         {item.status === 'winner' && (
                             <div className="absolute -top-4 -right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg z-10 animate-bounce">
                                 <FaTrophy className="text-xl" />

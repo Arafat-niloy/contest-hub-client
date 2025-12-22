@@ -5,7 +5,6 @@ const ContestDetails = () => {
     const contest = useLoaderData();
     const { _id, contestName, image, description, price, prizeMoney, taskInstruction, deadline, participationCount } = contest;
 
-    // ডেডলাইন চেক করার লজিক
     const isDeadlineOver = new Date(deadline) < new Date();
 
     return (
@@ -13,7 +12,6 @@ const ContestDetails = () => {
         <div className="bg-white dark:bg-gray-900 min-h-screen pt-24 pb-20 font-sans text-[#1A1A1A] dark:text-gray-100 transition-colors duration-300">
             <div className="w-11/12 max-w-screen-2xl mx-auto">
                 
-                {/* Back Button / Breadcrumb */}
                 <div className="mb-6">
                     <Link to="/all-contests" className="text-gray-500 dark:text-gray-400 hover:text-[#FF642F] dark:hover:text-[#FF642F] transition-colors flex items-center gap-2 font-medium">
                         ← Back to all contests
@@ -93,7 +91,6 @@ const ContestDetails = () => {
                             </div>
                         </div>
 
-                        {/* ✅ 3. Task Instruction Box Dark Mode */}
                         <div className="mb-10">
                             <h3 className="font-bold text-xl mb-4 flex items-center gap-2 text-[#1A1A1A] dark:text-white">
                                 <FaFileAlt className="text-[#FF642F]" /> Task Instruction

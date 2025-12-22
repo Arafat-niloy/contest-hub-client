@@ -12,23 +12,19 @@ const Payment = () => {
     const { contestName, price, image } = contest;
 
     return (
-        // 1. Main Background and Text Color Updated
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center items-center py-24 px-4 font-sans text-[#1A1A1A] dark:text-gray-200 transition-colors duration-300">
             
             {/* Back Link */}
             <div className="w-full max-w-lg mb-6">
-                {/* 2. Link Color Updated */}
                 <Link to={`/contest/${contest._id}`} className="text-gray-500 dark:text-gray-400 hover:text-[#FF642F] flex items-center gap-2 transition-colors font-medium">
                     <FaArrowLeft /> Cancel & Go Back
                 </Link>
             </div>
 
             {/* Main Payment Card */}
-            {/* 3. Card Background and Border Updated */}
             <div className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-700 transition-colors">
                 
                 {/* Header Section */}
-                {/* Header is already dark (bg-gray-900), so we keep it as is for contrast or update border if needed */}
                 <div className="bg-gray-900 text-white p-8 text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full bg-[#FF642F] opacity-10"></div>
                     <div className="relative z-10">
@@ -46,7 +42,6 @@ const Payment = () => {
                 <div className="p-8">
                     
                     {/* Summary Box */}
-                    {/* 4. Summary Box Background and Text Updated */}
                     <div className="flex gap-4 items-center bg-orange-50 dark:bg-gray-700/40 p-4 rounded-xl border border-orange-100 dark:border-gray-600 mb-8 transition-colors">
                         <img 
                             src={image} 

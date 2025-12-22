@@ -34,7 +34,6 @@ const MyWinning = () => {
             
             {/* Stats Header */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                {/* Gradient Card - Remains same mostly as it uses white text */}
                 <div className="bg-gradient-to-r from-[#FF642F] to-[#ff8e66] rounded-2xl p-6 text-white shadow-lg flex items-center justify-between">
                     <div>
                         <h2 className="text-lg opacity-90 font-medium">Total Wins</h2>

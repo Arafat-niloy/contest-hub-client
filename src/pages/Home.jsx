@@ -39,7 +39,6 @@ const Home = () => {
     };
 
     return (
-        // ✅ 1. Main Container Background Updated
         <div className="bg-white dark:bg-gray-900 pb-20 font-sans text-[#1A1A1A] dark:text-gray-100 transition-colors duration-300">
             
             {/* ================= HERO SECTION ================= */}
@@ -61,7 +60,6 @@ const Home = () => {
                             Join the ultimate hub for creators. Participate in world-class contests, compete with top talents, and showcase your creativity.
                         </p>
                         
-                         {/* ✅ 2. Search Form Dark Mode Fix */}
                          <form onSubmit={handleSearch} className="join w-full max-w-lg shadow-2xl rounded-full overflow-hidden bg-white dark:bg-gray-800 p-1.5 pl-6 flex items-center transition-colors duration-300">
                             <input 
                                 type="text" 
@@ -86,7 +84,6 @@ const Home = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {popularContests.map(contest => (
-                        // ✅ 3. Card Dark Mode Fix
                         <div key={contest._id} className="card bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 hover:border-orange-100 dark:hover:border-gray-600 transition-all duration-300 group rounded-2xl overflow-hidden">
                              <figure className="h-60 relative overflow-hidden">
                                 <img src={contest.image} alt={contest.contestName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -128,7 +125,6 @@ const Home = () => {
             </div>
 
             {/* ================= BEST CREATORS SECTION ================= */}
-            {/* ✅ 4. Section Background Updated */}
             <div className="bg-[#FFF8F5] dark:bg-gray-800 py-24 transition-colors duration-300"> 
                 <div className="w-11/12 max-w-screen-2xl mx-auto">
                     <div className="text-center mb-16">
@@ -138,7 +134,6 @@ const Home = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {bestCreators.map(creator => (
-                            // ✅ 5. Creator Card Updated
                             <div key={creator._id} className="flex items-center gap-5 p-6 bg-white dark:bg-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-orange-200 dark:hover:border-gray-600">
                                 <div className="avatar">
                                     <div className="w-16 rounded-full ring ring-[#FF642F] ring-offset-base-100 dark:ring-offset-gray-700 ring-offset-2">
@@ -188,7 +183,7 @@ const Home = () => {
 
              {/* ================= PROMOTION / CALL TO ACTION ================= */}
              
-             {/* 1. Creator Promotion (Gradient remains mostly same, just text tweaks if needed) */}
+             {/* 1. Creator Promotion  */}
              {(!user || userRole === 'creator' || userRole === 'admin') && (
                 <div className="w-11/12 max-w-screen-2xl mx-auto my-20 bg-gradient-to-tr from-[#FF642F] to-[#FF9100] rounded-3xl p-10 md:p-20 text-white flex flex-col md:flex-row items-center justify-between shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-white opacity-10 blur-2xl"></div>

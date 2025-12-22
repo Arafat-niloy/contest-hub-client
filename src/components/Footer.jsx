@@ -43,7 +43,6 @@ const Footer = () => {
                         <li key={index}>
                             <Link 
                                 to={item.path} 
-                                // 4. Link Text Colors Updated
                                 className="text-gray-600 dark:text-gray-300 hover:text-[#FF642F] dark:hover:text-[#FF642F] font-medium text-[15px] transition-colors relative group"
                             >
                                 {item.name}
@@ -53,9 +52,7 @@ const Footer = () => {
                     ))}
                 </ul>
 
-                {/* 3. Social Icons */}
                 <div className="flex items-center gap-5 mb-10">
-                    {/* 5. Social Buttons Updated (Bg, Border, Icon Color) */}
                     <a href="#" className="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-[#FF642F] hover:text-white hover:border-[#FF642F] hover:-translate-y-1 transition-all duration-300 shadow-sm">
                         <FaInstagram size={18} />
                     </a>
@@ -72,8 +69,6 @@ const Footer = () => {
                     </a>
                 </div>
 
-                {/* 4. Copyright Text */}
-                {/* 6. Border & Text Color Updated */}
                 <div className="w-full border-t border-gray-100 dark:border-gray-800 pt-8">
                     <p className="text-gray-400 dark:text-gray-500 text-sm">
                         © {new Date().getFullYear()} ContestHub. All rights reserved.

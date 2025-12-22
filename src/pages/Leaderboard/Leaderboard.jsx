@@ -25,12 +25,10 @@ const Leaderboard = () => {
     const otherLeaders = users.slice(3);
 
     return (
-        // 1. Main Background updated
         <div className="py-12 px-4 max-w-7xl mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
             
             {/* Header */}
             <div className="text-center mb-16">
-                {/* 2. Text colors updated */}
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white flex justify-center items-center gap-3">
                     <FaTrophy className="text-[#FF642F]" /> Contest Leaderboard
                 </h2>
@@ -46,7 +44,6 @@ const Leaderboard = () => {
                         <div className="order-2 md:order-1 flex flex-col items-center w-full md:w-1/3">
                             <div className="relative">
                                 <FaCrown className="absolute -top-8 left-1/2 -translate-x-1/2 text-3xl text-gray-400" />
-                                {/* 3. Image container bg updated */}
                                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-gray-400 p-1 bg-white dark:bg-gray-800 shadow-xl overflow-hidden transition-colors">
                                     <img src={topLeaders[1].photo} alt="User" className="w-full h-full rounded-full object-cover" />
                                 </div>
@@ -54,7 +51,6 @@ const Leaderboard = () => {
                                     2nd
                                 </div>
                             </div>
-                            {/* 4. Card bg updated */}
                             <div className="mt-6 text-center bg-white dark:bg-gray-800 p-6 rounded-2xl w-full shadow-lg border-t-4 border-gray-400 transition-colors">
                                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{topLeaders[1].name}</h3>
                                 <p className="text-[#FF642F] font-bold text-lg mt-1">{topLeaders[1].winCount} Wins</p>
@@ -74,7 +70,6 @@ const Leaderboard = () => {
                                     <FaTrophy /> 1st
                                 </div>
                             </div>
-                            {/* 5. Winner Card Gradient updated for Dark Mode */}
                             <div className="mt-8 text-center bg-gradient-to-b from-[#FFF0E6] to-white dark:from-gray-700 dark:to-gray-800 p-8 rounded-2xl w-full shadow-2xl border-t-4 border-yellow-500 transition-colors">
                                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{topLeaders[0].name}</h3>
                                 <p className="text-[#FF642F] font-extrabold text-2xl mt-1">{topLeaders[0].winCount} Wins</p>
@@ -104,8 +99,6 @@ const Leaderboard = () => {
                 </div>
             )}
 
-            {/* Rest of the Leaders List */}
-            {/* 6. Table Container updated */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 max-w-5xl mx-auto transition-colors">
                 <div className="p-6 bg-[#FF642F] bg-opacity-10 dark:bg-opacity-20 border-b border-[#FF642F] border-opacity-20">
                     <h3 className="text-xl font-bold text-gray-800 dark:text-white">All Participants Ranking</h3>

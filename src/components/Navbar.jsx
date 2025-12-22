@@ -6,10 +6,8 @@ import { FaSignOutAlt, FaColumns, FaSun, FaMoon } from "react-icons/fa";
 const Navbar = () => {
     const { user, logOut } = useContext(AuthContext);
 
-    // ১. থিম স্টেট ম্যানেজমেন্ট
     const [theme, setTheme] = useState(localStorage.getItem("theme") ? localStorage.getItem("theme") : "light");
 
-    // ২. থিম পরিবর্তন এবং লোকাল স্টোরেজে সেভ করার ইফেক্ট
     useEffect(() => {
         localStorage.setItem("theme", theme);
         const html = document.documentElement;
@@ -20,7 +18,6 @@ const Navbar = () => {
         }
     }, [theme]);
 
-    // ৩. টগল হ্যান্ডলার
     const handleToggle = (e) => {
         if (e.target.checked) {
             setTheme("dark");
@@ -35,7 +32,6 @@ const Navbar = () => {
             .catch(error => console.log(error));
     }
 
-    // ৪. ডার্ক মোড স্টাইল আপডেট (dark: prefix ব্যবহার করে)
     const navLinkStyles = ({ isActive }) =>
         isActive
             ? "text-black dark:text-white font-semibold text-[16px] bg-transparent hover:bg-transparent"
@@ -48,7 +44,6 @@ const Navbar = () => {
     </>
 
     return (
-        // dark:bg-gray-900 এবং dark:border-gray-800 যোগ করা হয়েছে
         <div className="navbar fixed z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 top-0 py-4 font-sans h-[80px] transition-colors duration-300">
             <div className="max-w-screen-2xl mx-auto w-full px-4 md:px-8 flex justify-between items-center">
                 
@@ -86,9 +81,7 @@ const Navbar = () => {
                 {/* --- Navbar End --- */}
                 <div className="navbar-end w-auto flex items-center gap-3">
                     
-                    {/* ৫. Theme Toggle Button (DaisyUI Swap) */}
                     <label className="swap swap-rotate mr-2">
-                        {/* this hidden checkbox controls the state */}
                         <input 
                             type="checkbox" 
                             onChange={handleToggle} 

@@ -1,12 +1,11 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { FaHome, FaUser, FaTrophy, FaList, FaChartPie, FaBars } from 'react-icons/fa';
 import useRole from "../hooks/useRole";
-import { useEffect } from "react"; // 1. useEffect ইম্পোর্ট করা হয়েছে
+import { useEffect } from "react"; 
 
 const Dashboard = () => {
     const [role] = useRole();
 
-    // 2. এই useEffect টি পেজ লোড/রিফ্রেশ হলে localStorage চেক করে থিম সেট করবে
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
         const html = document.documentElement;

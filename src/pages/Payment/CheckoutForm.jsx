@@ -126,17 +126,15 @@ const CheckoutForm = ({ contest }) => {
     return (
         <form onSubmit={handleSubmit} className="w-full">
             <div className="mb-6">
-                {/* 1. Label Color Updated */}
                 <label className="block text-gray-600 dark:text-gray-300 font-semibold mb-2 ml-1">Card Details</label>
                 
-                {/* 2. Input Wrapper: Background kept white for Stripe text visibility, but border adapted */}
                 <div className="border border-gray-300 dark:border-gray-600 p-4 rounded-xl bg-white shadow-sm hover:border-[#FF642F] focus-within:border-[#FF642F] transition-colors duration-300">
                     <CardElement
                         options={{
                             style: {
                                 base: {
                                     fontSize: '16px',
-                                    color: '#424770', // Dark text works best on the white background
+                                    color: '#424770', 
                                     fontFamily: 'sans-serif',
                                     '::placeholder': {
                                         color: '#aab7c4',

@@ -11,7 +11,6 @@ const MyCreatedContest = () => {
     const [contests, setContests] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // ডাটা লোড করা
     useEffect(() => {
         if (user?.email) {
             setLoading(true);
@@ -24,7 +23,6 @@ const MyCreatedContest = () => {
         }
     }, [user, axiosSecure]);
 
-    // কন্টেস্ট ডিলিট করার ফাংশন
     const handleDelete = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -50,7 +48,6 @@ const MyCreatedContest = () => {
                                 background: "#1f2937",
                                 color: "#fff"
                             });
-                            // UI থেকে ডিলিট হওয়া আইটেম সরিয়ে ফেলা
                             const remaining = contests.filter(contest => contest._id !== id);
                             setContests(remaining);
                         }
