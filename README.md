@@ -2,7 +2,7 @@
 
 **ContestHub** is a comprehensive Platform designed to bridge the gap between contest creators and participants. It allows users to discover, register, and participate in various contests while giving creators the tools to manage contests and select winners efficiently.
 
-🔗 **Live Site URL:** [https://contesthub-demo.web.app](YOUR_LIVE_SITE_LINK_HERE)
+🔗 **Live Site URL:** [https://gentle-lolly-d94a72.netlify.app/](https://gentle-lolly-d94a72.netlify.app/)
 
 ---
 
