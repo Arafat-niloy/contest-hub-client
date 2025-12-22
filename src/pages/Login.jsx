@@ -3,9 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { FaGoogle, FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-
 import useAxiosPublic from "../hooks/useAxiosPublic"; 
 
 const Login = () => {
@@ -20,11 +19,22 @@ const Login = () => {
 
     const from = location.state?.from?.pathname || "/";
 
+    const getAndSaveToken = async (email) => {
+        const userInfo = { email: email };
+        const res = await axiosPublic.post('/jwt', userInfo);
+        if (res.data.token) {
+            localStorage.setItem('access-token', res.data.token);
+        }
+    };
+
     const onSubmit = data => {
         setLoading(true);
         signIn(data.email, data.password)
-            .then(result => {
+            .then(async (result) => {
+                await getAndSaveToken(data.email);
+                
                 toast.success('Welcome back! Login Successful');
+                setLoading(false);
                 navigate(from, { replace: true });
             })
             .catch(error => {
@@ -46,8 +56,9 @@ const Login = () => {
                 };
 
                 axiosPublic.post('/users', userInfo)
-                    .then(res => {
-                        console.log('User saved to DB:', res.data);
+                    .then(async (res) => {
+                        await getAndSaveToken(user?.email);
+                        
                         toast.success('Google Login Successful');
                         navigate(from, { replace: true });
                     })
@@ -59,12 +70,10 @@ const Login = () => {
     };
 
     return (
-        // 1. Page Background 
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-300">
-            {/* 2. Card Background  */}
             <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-transparent dark:border-gray-700">
                 
-                {/* Left Side  */}
+                {/* Left Side */}
                 <div className="hidden md:flex w-1/2 bg-[#FF642F] text-white flex-col justify-center items-center p-10 relative">
                     <div className="absolute inset-0 bg-black opacity-10"></div>
                     <div className="relative z-10 text-center">
@@ -77,20 +86,17 @@ const Login = () => {
                 {/* Right Side */}
                 <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
                     <div className="text-center mb-8">
-                        {/* 3. Heading Texts  */}
                         <h2 className="text-3xl font-bold text-gray-800 dark:text-white">Login to ContestHub</h2>
                         <p className="text-gray-500 dark:text-gray-400 mt-2">Enter your details below</p>
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                         <div className="form-control">
-                            {/* 4. Labels  */}
                             <label className="label font-semibold text-gray-700 dark:text-gray-300">Email Address</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaEnvelope />
                                 </div>
-                                {/* 5. Input Fields  (Dark bg, light text, border adjusted) */}
                                 <input 
                                     type="email" 
                                     {...register("email", { required: true })} 
@@ -123,10 +129,8 @@ const Login = () => {
                         </button>
                     </form>
 
-                    {/* 6. Divider Color  */}
                     <div className="divider text-gray-400 dark:text-gray-500 my-6">OR LOGIN WITH</div>
 
-                    {/* 7. Google Button  (Border, Text, Hover) */}
                     <button onClick={handleGoogleSignIn} className="btn btn-outline border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white w-full flex items-center gap-2">
                         <FcGoogle className="text-xl" />
                         <span>Continue with Google</span>
