@@ -4,9 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
 import useAxiosPublic from "../hooks/useAxiosPublic";
-import { FaUser, FaImage, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaArrowRight } from "react-icons/fa";
+import { FaUser, FaImage, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaArrowRight } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-
 
 const SignUp = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -17,6 +16,15 @@ const SignUp = () => {
     // UI States
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    // ✅ JWT টোকেন জেনারেট এবং সেভ করার ফাংশন
+    const getAndSaveToken = async (email) => {
+        const userInfo = { email: email };
+        const res = await axiosPublic.post('/jwt', userInfo);
+        if (res.data.token) {
+            localStorage.setItem('access-token', res.data.token);
+        }
+    };
 
     const onSubmit = data => {
         setLoading(true);
@@ -32,10 +40,14 @@ const SignUp = () => {
                         };
                         
                         axiosPublic.post('/users', userInfo)
-                            .then(res => {
+                            .then(async (res) => {
                                 if (res.data.insertedId || res.data.message === 'user already exists') {
+                                    // ✅ টোকেন নিয়ে সেভ করা হচ্ছে
+                                    await getAndSaveToken(data.email);
+                                    
                                     reset();
                                     toast.success('Account Created Successfully!');
+                                    setLoading(false);
                                     navigate('/');
                                 }
                             })
@@ -64,8 +76,10 @@ const SignUp = () => {
                 };
                 
                 axiosPublic.post('/users', userInfo)
-                    .then(res => {
-                        console.log('User saved to DB:', res.data);
+                    .then(async (res) => {
+                        // ✅ গুগল লগইনের পর টোকেন সেভ করা হচ্ছে
+                        await getAndSaveToken(user?.email);
+                        
                         toast.success('Google Sign-Up Successful');
                         navigate('/');
                     })
@@ -77,30 +91,24 @@ const SignUp = () => {
     };
 
     return (
-        // 1. Global Background 
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-300">
-            {/* 2. Card Background & Border  */}
             <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-transparent dark:border-gray-700">
                 
                 {/* Left Side - Form Section */}
                 <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center order-2 md:order-1">
                     <div className="mb-6">
-                        {/* 3. Headers  */}
                         <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Create Account</h1>
                         <p className="text-gray-500 dark:text-gray-400 mt-2">Join ContestHub to start your journey!</p>
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        
                         {/* Name Input */}
                         <div className="form-control">
-                            {/* 4. Labels  */}
                             <label className="label font-semibold text-gray-700 dark:text-gray-300">Full Name</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <FaUser />
                                 </div>
-                                {/* 5. Inputs  (Dark bg, Light Text, Dark Border) */}
                                 <input 
                                     type="text" 
                                     {...register("name", { required: true })} 
@@ -172,7 +180,6 @@ const SignUp = () => {
                             {errors.password && <p className="text-red-500 text-xs mt-1">Password must be 6+ chars with Uppercase, Lowercase, Number & Special char.</p>}
                         </div>
 
-                        {/* Submit Button */}
                         <div className="form-control mt-6">
                             <button 
                                 disabled={loading}
@@ -183,10 +190,8 @@ const SignUp = () => {
                         </div>
                     </form>
 
-                    {/* 6. Divider  */}
                     <div className="divider text-gray-400 dark:text-gray-500 my-6">OR JOIN WITH</div>
 
-                    {/* 7. Google Button  */}
                     <button 
                         onClick={handleGoogleSignIn} 
                         className="btn btn-outline border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white w-full flex items-center gap-2"
@@ -203,7 +208,7 @@ const SignUp = () => {
                     </p>
                 </div>
 
-                {/* Right Side  */}
+                {/* Right Side Illustration */}
                 <div className="hidden md:flex w-1/2 bg-[#FF642F] flex-col justify-center items-center p-10 relative order-1 md:order-2 text-white">
                     <div className="absolute inset-0 bg-black opacity-10"></div>
                     <div className="relative z-10 text-center">
