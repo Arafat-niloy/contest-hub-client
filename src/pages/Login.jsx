@@ -3,13 +3,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUserSecret, FaUser } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import useAxiosPublic from "../hooks/useAxiosPublic"; 
 
 const Login = () => {
     const { signIn, googleSignIn } = useContext(AuthContext);
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    // ✅ Added setValue here
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
     const navigate = useNavigate();
     const location = useLocation();
     const axiosPublic = useAxiosPublic();
@@ -18,6 +19,19 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
 
     const from = location.state?.from?.pathname || "/";
+
+    // ✅✅ DEMO CREDENTIAL HANDLERS (Update these with your real DB data) ✅✅
+    const handleFillAdmin = () => {
+        setValue("email", "admin@contest.com"); // আপনার রিয়েল অ্যাডমিন ইমেইল দিন
+        setValue("password", "123456");         // আপনার রিয়েল পাসওয়ার্ড দিন
+        toast.success("Admin Credentials Filled!");
+    };
+
+    const handleFillUser = () => {
+        setValue("email", "user@contest.com");  // আপনার রিয়েল ইউজার ইমেইল দিন
+        setValue("password", "123456");         // আপনার রিয়েল পাসওয়ার্ড দিন
+        toast.success("User Credentials Filled!");
+    };
 
     const getAndSaveToken = async (email) => {
         const userInfo = { email: email };
@@ -122,6 +136,24 @@ const Login = () => {
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </div>
                             </div>
+                        </div>
+
+                        {/* ✅✅ DEMO LOGIN BUTTONS SECTION ✅✅ */}
+                        <div className="flex gap-3 pt-2">
+                            <button 
+                                type="button" 
+                                onClick={handleFillAdmin}
+                                className="flex-1 btn btn-xs sm:btn-sm bg-gray-800 hover:bg-gray-900 text-white border-none"
+                            >
+                                <FaUserSecret /> Admin Demo
+                            </button>
+                            <button 
+                                type="button" 
+                                onClick={handleFillUser}
+                                className="flex-1 btn btn-xs sm:btn-sm bg-blue-600 hover:bg-blue-700 text-white border-none"
+                            >
+                                <FaUser /> User Demo
+                            </button>
                         </div>
 
                         <button disabled={loading} className="btn bg-[#FF642F] hover:bg-[#e55a2a] text-white border-none w-full text-lg shadow-md">

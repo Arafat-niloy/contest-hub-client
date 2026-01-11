@@ -6,6 +6,7 @@ import { FaSignOutAlt, FaColumns, FaSun, FaMoon } from "react-icons/fa";
 const Navbar = () => {
     const { user, logOut } = useContext(AuthContext);
 
+    // Theme Management
     const [theme, setTheme] = useState(localStorage.getItem("theme") ? localStorage.getItem("theme") : "light");
 
     useEffect(() => {
@@ -32,15 +33,19 @@ const Navbar = () => {
             .catch(error => console.log(error));
     }
 
+    // Active Link Styling
     const navLinkStyles = ({ isActive }) =>
         isActive
-            ? "text-black dark:text-white font-semibold text-[16px] bg-transparent hover:bg-transparent"
+            ? "text-black dark:text-white font-semibold text-[16px] bg-transparent hover:bg-transparent border-b-2 border-[#FF642F]"
             : "text-[#1A1A1A] dark:text-gray-300 font-medium text-[16px] hover:text-[#FF642F] bg-transparent hover:bg-transparent transition-colors";
 
+    // ✅✅ UPDATED: Added About Us & Contact Links ✅✅
     const navOptions = <>
         <li><NavLink to="/" className={navLinkStyles}>Home</NavLink></li>
         <li><NavLink to="/all-contests" className={navLinkStyles}>All Contests</NavLink></li>
         <li><NavLink to="/leaderboard" className={navLinkStyles}>Leaderboard</NavLink></li>
+        <li><NavLink to="/about" className={navLinkStyles}>About Us</NavLink></li>
+        <li><NavLink to="/contact" className={navLinkStyles}>Contact</NavLink></li>
     </>
 
     return (
@@ -73,7 +78,7 @@ const Navbar = () => {
 
                 {/* --- Menu Links --- */}
                 <div className="navbar-center hidden lg:flex">
-                    <ul className="menu menu-horizontal px-1 gap-10">
+                    <ul className="menu menu-horizontal px-1 gap-8">
                         {navOptions}
                     </ul>
                 </div>
@@ -81,16 +86,15 @@ const Navbar = () => {
                 {/* --- Navbar End --- */}
                 <div className="navbar-end w-auto flex items-center gap-3">
                     
+                    {/* Theme Controller */}
                     <label className="swap swap-rotate mr-2">
                         <input 
                             type="checkbox" 
                             onChange={handleToggle} 
                             checked={theme === "dark"}
                         />
-                        
                         {/* sun icon */}
                         <FaSun className="swap-on fill-current w-6 h-6 text-yellow-500" />
-                        
                         {/* moon icon */}
                         <FaMoon className="swap-off fill-current w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </label>
